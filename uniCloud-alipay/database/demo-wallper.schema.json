@@ -20,14 +20,16 @@
           "title": "壁纸描述",
           "bsonType": "string"
         },
-        "classname":{
-          "title": "所属分类",
-          "bsonType": "string"
-        },
         "classid":{
           "title": "分类ID",
           "bsonType": "string",
           "foreignKey": "demo-classify._id"//外键demo-classify中的_id
-        }
+        },
+        "createTime":{
+            "title": "创建时间",
+            "bsonType": "timestamp",
+            "forceDefaultValue":{
+               "$env": "now" 
+            }
 	}
-}
+}}

@@ -72,6 +72,13 @@
     {
         "navigationBarTitleText" : ""
     }
+},
+{
+    "path" : "pages/wallpaper/classify",
+    "style" : 
+    {
+        "navigationBarTitleText" : ""
+    }
 }
 ],
 	"globalStyle": {

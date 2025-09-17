@@ -9,7 +9,7 @@
 		"delete": true
 	},
 	"properties": {
-		"_id": {
+		"_id": { 
 			"description": "ID，系统自动生成"
 		},
         "picurl":{
@@ -27,7 +27,7 @@
         "classid":{
           "title": "分类ID",
           "bsonType": "string",
-          "foreignKey": "demo-classify._id"
+          "foreignKey": "demo-classify._id"//外键demo-classify中的_id
         }
 	}
 }

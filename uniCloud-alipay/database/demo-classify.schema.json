@@ -15,6 +15,18 @@
         "name":{
             "title": "分类名称",
             "bsonType": "string" 
+        },
+        "status":{
+            "title": "状态",
+            "bsonType": "bool",
+            "defaultValue":false
+        },
+        "createTime":{
+            "title": "创建时间",
+            "bsonType": "timestamp",
+            "forceDefaultValue":{
+               "$env": "now" 
+            }
         }
 	}
 }

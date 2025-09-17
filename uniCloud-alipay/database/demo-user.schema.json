@@ -62,7 +62,7 @@
         },
         "avatar":{
             "title": "头像",
-            "bsonType": "file" 
+            "bsonType": "array" 
         }
          }
 	}

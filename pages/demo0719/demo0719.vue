@@ -1,5 +1,11 @@
 <template>
     <view class="layout">
+        <uni-file-picker
+        v-model="formData.avatar"
+        mode="grid"
+        fileMediatype="image"
+        limit="1"
+        ></uni-file-picker>
         <input v-model="formData.name" placeholder="请输入姓名"/>
         <input v-model.number="formData.age" type="number" placeholder="请输入年龄"/>
         <button @click="handleAdd">新增</button>
@@ -11,7 +17,8 @@
     
     const formData = ref({
         name:"",
-        age:""
+        age:"",
+        avatar:[]//存放头像
     })
     
     const db = uniCloud.database();
@@ -28,6 +35,11 @@
            uni.showToast({
                title:'新增成功'
            })
+           formData.value={
+              name:"",
+              age:"",
+              avatar:[] 
+           }
        }
   }catch(err){
     console.log(err);
@@ -50,6 +62,7 @@
         border: 1px solid #eee;
         margin-bottom: 30rpx;
         height: 50rpx;
+        margin-top: 30rpx;
     };
 }
 

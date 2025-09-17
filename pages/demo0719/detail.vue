@@ -2,6 +2,8 @@
     <!--v-if当有数据是才会显示内容 -->
     <view class="detail" v-if="detail">
         <view class="content">
+            <!-- <image v-if="item.avatar" :src="item.avatar[0].url" mode="widthFix"></image> -->
+        <view>头像：<image v-if="detail.avatar" :src="detail.avatar[0].url" ></image></view>    
         <view>姓名：<text class="big">{{detail.name}}</text></view>
         <view>年龄：<text class="big">{{detail.age}}</text></view>
         <!-- <view>性别：<text class="big">{{detail.genger}}</text></view> -->

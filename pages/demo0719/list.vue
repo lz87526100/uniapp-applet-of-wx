@@ -9,6 +9,7 @@
       <view class="box" v-for=" item,index in userList " :key="item._id" @click="goDetail(item._id)">
         <view>序列号：{{index+1}}</view>
         <view>ID：{{item._id}}</view>
+        <image v-if="item.avatar" :src="item.avatar[0].url" mode="widthFix"></image>
         <view>姓名：{{item.name}}</view>
         <view>年龄：{{item.age}}</view>
         <view>性别：{{item.genger}}</view>
@@ -50,11 +51,11 @@ const getData = async ()=>{
     //利用正则表达式实现模糊查询
     .where(`${new RegExp(keyword.value,'i')}.test(name)`)
     // 排序 asc  升序 desc 降序
-    .orderBy("age asc")
+    .orderBy("createTime desc")
     .skip(current)
     .limit(queryParams.value.pageSize)
     //过滤不需要的内容 节省流量开支
-    .field("name,age,createtime")
+    .field("name,age,createtime,avatar")
     .get({
         getCount:true
     });

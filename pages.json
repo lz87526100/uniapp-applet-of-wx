@@ -79,6 +79,13 @@
     {
         "navigationBarTitleText" : ""
     }
+},
+{
+    "path" : "pages/wallpaper/piclist",
+    "style" : 
+    {
+        "navigationBarTitleText" : ""
+    }
 }
 ],
 	"globalStyle": {

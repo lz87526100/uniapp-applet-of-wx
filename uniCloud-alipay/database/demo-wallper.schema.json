@@ -14,7 +14,7 @@
 		},
         "picurl":{
             "title": "壁纸链接地址",
-            "bsonType": "string"
+            "bsonType": "object"
         },
         "description":{
           "title": "壁纸描述",

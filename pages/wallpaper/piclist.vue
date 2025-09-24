@@ -12,7 +12,7 @@
               :page-size 为页面限制  getcount 为查询总数 onReachBottom 触底上拉起步7个-->
             <unicloud-db ref="udb" v-slot:default="{hasMore,data,pagination,loading,error,options}" 
             :collection="colList" :page-size="7" getcount 
-            field="description,classid.name as classname,picurl.url as url">
+            field="description,createTime,classid.name as classname,picurl.url as url">
             
             
             <view v-if="error">{{error}}</view>

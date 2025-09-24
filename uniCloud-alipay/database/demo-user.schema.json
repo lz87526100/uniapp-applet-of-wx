@@ -26,10 +26,10 @@
         "age":{
             "title": "年龄",
             "description": "请输入年龄", 
-            "bsonType": "double",
-            "maximum": 35,
-            "minimum": 18,
-            "defaultValue":18
+            "bsonType": "string"
+            // "maximum": 35,
+            // "minimum": 18,
+            // "defaultValue":18
         },
         "gender":{
             "title": "性别",
@@ -63,6 +63,12 @@
         "avatar":{
             "title": "头像",
             "bsonType": "array" 
+        },
+        "like":{
+          "title":"爱好",
+           "bsonType":"array",
+           "defaultValue":[]
         }
          }
+        
 	}

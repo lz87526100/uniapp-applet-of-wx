@@ -1,0 +1,15 @@
+{
+  "name": "demoObj0920",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  },
+  "cloudfunction-config": {
+		"memorySize": 256,
+		"timeout": 60,
+		"triggers": [{
+		}],
+		"path": "",
+		"runtime": "Nodejs18"
+	}
+}

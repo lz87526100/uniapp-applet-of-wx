@@ -86,6 +86,20 @@
     {
         "navigationBarTitleText" : ""
     }
+},
+{
+    "path" : "pages/demo0920/demo0920",
+    "style" : 
+    {
+        "navigationBarTitleText" : ""
+    }
+},
+{
+    "path" : "pages/demo0924/demo0924",
+    "style" : 
+    {
+        "navigationBarTitleText" : ""
+    }
 }
 ],
 	"globalStyle": {

@@ -5,12 +5,13 @@
 				<view class="userinfo">
 					<view class="avatar"><image class="pic" src="../../static/defAvatar.png" mode="aspectFill"></image></view>
 					<view class="username">{{item.user_id[0].nickname || "匿名"}}</view>
+                    
 				</view>
 				<view class="body">			
 					<view class="text">
 						<view class="font">{{item.content}}</view>
 					</view>
-					<view class="piclist" v-if="item.pics.length">
+					<view class="piclist" v-if="item.pics?.length">
 						<view class="pic" v-for="(pic,index) in item.pics" :key="index">
 							<image :src="pic.url" mode="aspectFill"></image>
 						</view>					

@@ -115,12 +115,18 @@ const _sfc_main = {
       this.$emit("uploadFiles", item);
     },
     choose() {
+      if (this.readonly)
+        return;
       this.$emit("choose");
     },
     delFile(index) {
+      if (this.readonly)
+        return;
       this.$emit("delFile", index);
     },
     prviewImage(img, index) {
+      if (this.readonly)
+        return;
       let urls = [];
       if (Number(this.limit) === 1 && this.disablePreview && !this.disabled) {
         this.$emit("choose");
@@ -171,8 +177,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     b: $props.delIcon && !$props.readonly,
     c: common_vendor.s($options.borderStyle),
     d: common_vendor.s($options.boxStyle),
-    e: $props.filesList.length < $props.limit && !$props.readonly
-  }, $props.filesList.length < $props.limit && !$props.readonly ? {
+    e: $props.filesList.length < $props.limit
+  }, $props.filesList.length < $props.limit ? {
     f: common_vendor.s($options.borderStyle),
     g: common_vendor.o((...args) => $options.choose && $options.choose(...args)),
     h: common_vendor.s($options.boxStyle)

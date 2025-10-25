@@ -1,5 +1,6 @@
 {
   "pages": [
+    "pages/blog/list",
     "pages/wallpaper/piclist",
     "pages/demo-user/list",
     "pages/index/index",
@@ -33,7 +34,8 @@
     "uni_modules/uni-id-pages/pages/userinfo/deactivate/deactivate",
     "uni_modules/uni-id-pages/pages/userinfo/realname-verify/realname-verify",
     "pages/articles/articles",
-    "pages/articles/list"
+    "pages/articles/list",
+    "pages/blog/edit"
   ],
   "window": {
     "backgroundTextStyle": "light",

@@ -6,10 +6,10 @@ const _sfc_main = {
     const db = common_vendor.tr.database();
     const add = () => {
       db.collection("demo-articles").add({
-        title: "jiuzhe ",
-        content: "jiuzheba "
+        title: "demo1023测试",
+        content: "demo1023测试内容"
       }).then((res) => {
-        common_vendor.index.__f__("log", "at pages/articles/articles.vue:16", res);
+        common_vendor.index.__f__("log", "at pages/articles/articles.vue:17", res);
       });
     };
     return (_ctx, _cache) => {

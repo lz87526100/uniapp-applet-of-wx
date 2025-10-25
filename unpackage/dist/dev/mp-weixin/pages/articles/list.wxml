@@ -1,1 +1,1 @@
-<view class=""></view>
+<view class=" data-v-f990c86e"><view wx:for="{{a}}" wx:for-item="item" wx:key="d" class="item data-v-f990c86e"><view class="data-v-f990c86e">标题：{{item.a}}</view><view class="data-v-f990c86e">内容：{{item.b}}</view><view class="data-v-f990c86e">发布者：{{item.c}}</view></view></view>

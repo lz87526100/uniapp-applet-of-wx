@@ -23,7 +23,21 @@
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
-.item.data-v-f990c86e {
+.layout .content.data-v-42e95e20 {
   padding: 30rpx;
-  border-bottom: 1px solid #eee;
+}
+.layout .content .textarea.data-v-42e95e20 {
+  font-size: 38rpx;
+  width: 100%;
+  line-height: 1.7em;
+  min-height: 200rpx;
+}
+.layout .pics.data-v-42e95e20 {
+  padding: 30rpx;
+}
+.layout .btns.data-v-42e95e20 {
+  padding: 30rpx;
+}
+.layout .btns button.data-v-42e95e20 {
+  width: 100%;
 }

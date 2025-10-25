@@ -1,0 +1,56 @@
+{
+  "pages": [
+    "pages/wallpaper/piclist",
+    "pages/demo-user/list",
+    "pages/index/index",
+    "pages/demo-user/add",
+    "pages/demo-user/edit",
+    "pages/demo-user/detail",
+    "pages/demo0719/demo0719",
+    "pages/demo0719/list",
+    "pages/demo0719/detail",
+    "pages/demo0719/update",
+    "pages/demo0829/demo0829",
+    "pages/demo0917/demo0917",
+    "pages/wallpaper/classify",
+    "pages/demo0920/demo0920",
+    "pages/subPage/subPage",
+    "pages/demo1009/demo1009",
+    "uni_modules/uni-id-pages/pages/register/register",
+    "uni_modules/uni-id-pages/pages/login/login-withoutpwd",
+    "uni_modules/uni-id-pages/pages/login/login-withpwd",
+    "uni_modules/uni-id-pages/pages/login/login-smscode",
+    "uni_modules/uni-id-pages/pages/userinfo/userinfo",
+    "uni_modules/uni-id-pages/pages/userinfo/bind-mobile/bind-mobile",
+    "uni_modules/uni-id-pages/pages/userinfo/cropImage/cropImage",
+    "uni_modules/uni-id-pages/pages/register/register-by-email",
+    "uni_modules/uni-id-pages/pages/retrieve/retrieve",
+    "uni_modules/uni-id-pages/pages/retrieve/retrieve-by-email",
+    "uni_modules/uni-id-pages/pages/common/webview/webview",
+    "uni_modules/uni-id-pages/pages/userinfo/change_pwd/change_pwd",
+    "uni_modules/uni-id-pages/pages/register/register-admin",
+    "uni_modules/uni-id-pages/pages/userinfo/set-pwd/set-pwd",
+    "uni_modules/uni-id-pages/pages/userinfo/deactivate/deactivate",
+    "uni_modules/uni-id-pages/pages/userinfo/realname-verify/realname-verify",
+    "pages/articles/articles",
+    "pages/articles/list"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "路线规划",
+    "navigationBarTextStyle": "black"
+  },
+  "plugins": {
+    "route-plan": {
+      "version": "2.0.1",
+      "provider": "wx50b5593e81dd937a"
+    }
+  },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "你的位置信息将用于小程序路线规划"
+    }
+  },
+  "usingComponents": {}
+}

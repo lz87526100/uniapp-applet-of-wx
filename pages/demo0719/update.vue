@@ -17,6 +17,7 @@ const formData = ref({
     age:""
 })
 
+
 //获取id
 onLoad((e)=>{
     id=e.id;

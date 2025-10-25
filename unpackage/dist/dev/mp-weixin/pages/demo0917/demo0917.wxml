@@ -1,0 +1,1 @@
+<view class=""><uni-file-picker wx:if="{{d}}" class="r" u-r="file" bindprogress="{{b}}" u-i="78ab93a0-0" bind:__l="__l" bindupdateModelValue="{{c}}" u-p="{{d}}"/><button bindtap="{{e}}">上传</button></view>

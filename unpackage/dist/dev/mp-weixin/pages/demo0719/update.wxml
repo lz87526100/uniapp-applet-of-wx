@@ -1,0 +1,1 @@
+<view class="layout data-v-7e255363"><input class="data-v-7e255363" placeholder="请输入姓名" value="{{a}}" bindinput="{{b}}"/><input class="data-v-7e255363" type="number" placeholder="请输入年龄" value="{{c}}" bindinput="{{d}}"/><button class="data-v-7e255363" bindtap="{{e}}">修改</button></view>

@@ -50,11 +50,32 @@
     "quickapp" : {},
     /* 小程序特有相关 */
     "mp-weixin" : {
-        "appid" : "",
+        "appid" : "wx4cba75786e52f1fe",
         "setting" : {
-            "urlCheck" : false
+            "urlCheck" : false,
+            "minified" : true
         },
-        "usingComponents" : true
+        "plugins" : {
+            "route-plan" : {
+                "version" : "2.0.1",
+                "provider" : "wx50b5593e81dd937a"
+            }
+        },
+        "permission" : {
+            "scope.userLocation" : {
+                "desc" : "你的位置信息将用于小程序路线规划"
+            }
+        },
+        "window" : {
+            "backgroundTextStyle" : "light",
+            "navigationBarBackgroundColor" : "#fff",
+            "navigationBarTitleText" : "路线规划",
+            "navigationBarTextStyle" : "black"
+        },
+        "usingComponents" : true,
+        "uniStatistics" : {
+            "enable" : true
+        }
     },
     "mp-alipay" : {
         "usingComponents" : true

@@ -21,6 +21,7 @@
         avatar:[]//存放头像
     })
     
+    
     const db = uniCloud.database();
     
     const handleAdd = async () =>{

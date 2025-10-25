@@ -57,6 +57,7 @@ module.exports = {
         let res = await dbJQL.collection("demo-user").doc(id).remove(); 
         console.log(res);
     },
+    
     //随机用户数据生成
     async demo(){
         
@@ -92,4 +93,7 @@ module.exports = {
         
         return res;
     }
+    
+    
+    
 }

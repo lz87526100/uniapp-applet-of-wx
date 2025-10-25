@@ -28,7 +28,8 @@ const getData = async()=>{
 }
 
 const handleAddUser = async ()=>{
-    let res = await  demoObj.addUser({name:"李四",age:21,gender:1});
+    let res = await  demoObj.addUser({name:"张三",age:21,gender:1});
+    
     console.log(res);
     getData();
 }

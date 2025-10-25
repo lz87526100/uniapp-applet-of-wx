@@ -1,3 +1,4 @@
+
 <template>
     <!--v-if当有数据是才会显示内容 -->
     <view class="detail" v-if="detail">

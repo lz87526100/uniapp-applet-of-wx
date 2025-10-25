@@ -6,7 +6,7 @@
       "version": 1
     }
   ], 
-  "passwordStrength": "medium", 
+  "passwordStrength": "weak", 
   "tokenSecret": "0123456789", 
   "requestAuthSecret": "9876543210", 
   "tokenExpiresIn": 7200, 
@@ -41,8 +41,8 @@
     }
   },
   "web": { 
-    "tokenExpiresIn": 7200,
-    "tokenExpiresThreshold": 3600,
+    "tokenExpiresIn": 2592000,
+    "tokenExpiresThreshold": 864000,
     "oauth": {
       "weixin-h5": { 
         "appid": "",
@@ -60,8 +60,8 @@
     "oauth": {
       
       "weixin": {
-        "appid": "",
-        "appsecret": ""
+        "appid": "wx4cba75786e52f1fe",
+        "appsecret": "ceb74afb71d1e49582bf2389bf8fe4a0"
       }
     }
   },

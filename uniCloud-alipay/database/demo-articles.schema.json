@@ -1,0 +1,64 @@
+{
+	"bsonType": "object",
+	"required": [
+		"user_id",
+		"title",
+		"content"
+	],
+	"permission": {
+		"read": "auth.uid != doc.auth.uid",
+		"create": "auth.uid != null",
+		"update": "doc.user_id == auth.uid",
+		"delete": "doc.user_id == auth.uid"
+	},
+	"properties": {
+		"_id": {
+			"description": "存储文档 ID（用户 ID），系统自动生成"
+		},
+		"user_id": {
+			"bsonType": "string",
+			"description": "文章作者ID， 参考`uni-id-users` 表",
+			"foreignKey": "uni-id-users._id",
+			"defaultValue": {
+				"$env": "uid"
+			}
+		},
+        "pics":{
+            "bsonType": "array",
+            "defaultValue":[],
+            "description": "照片"
+        },
+	
+		"content": {
+			"bsonType": "string",
+			"title": "文章内容",
+			"description": "文章内容",
+			"label": "文章内容",
+			"trim": "right"
+		},
+        "createTime":{
+            "bsonType": "timestamp",
+            "description": "创建时间",
+          "defaultValue":{
+              "$env": "now"
+          }
+        },
+        "publish_date":{
+            "bsonType": "timestamp",
+            "title": "发表时间",
+            "description": "发表时间",
+            "defaultValue":{
+                "$env": "now"
+            }
+        },
+            "publish_ip":{
+            "bsonType": "string",
+            "title": "发布评论时IP地址",
+            "description": "发布评论时IP地址",
+            "defaultValue":{
+                "$env": "clientIP"
+            }
+        }
+    },
+	"version": "0.0.1"
+}

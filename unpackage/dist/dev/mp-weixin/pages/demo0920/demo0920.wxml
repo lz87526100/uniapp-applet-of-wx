@@ -1,0 +1,1 @@
+<view class=""><button bindtap="{{a}}">新增用户</button><view wx:for="{{b}}" wx:for-item="item" wx:key="f" class="item"><view>{{item.a}}</view><view>{{item.b}}</view><view>{{item.c}}</view><view>{{item.d}}</view><view>{{item.e}}</view><view>-------------</view></view></view>

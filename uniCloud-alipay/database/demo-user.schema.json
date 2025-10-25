@@ -26,7 +26,7 @@
         "age":{
             "title": "年龄",
             "description": "请输入年龄", 
-            "bsonType": "string"
+            "bsonType": "int"
             // "maximum": 35,
             // "minimum": 18,
             // "defaultValue":18

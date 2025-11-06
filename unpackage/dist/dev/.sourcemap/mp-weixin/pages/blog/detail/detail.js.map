@@ -1,0 +1,1 @@
+{"version":3,"file":"detail.js","sources":["E:/movie/HBuilderX.4.57.2025032507/HBuilderX/plugins/uniapp-cli-vite/uniPage:/cGFnZXMvYmxvZy9kZXRhaWwvZGV0YWlsLnZ1ZQ"],"sourcesContent":["import MiniProgramPage from 'D:/uni-app/uniCloudDemo0717/pages/blog/detail/detail.vue'\nwx.createPage(MiniProgramPage)"],"names":[],"mappings":";;;;;;;AACA,GAAG,WAAW,eAAe;"}

@@ -619,7 +619,8 @@ const MINI_PROGRAM_PAGE_RUNTIME_HOOKS = /* @__PURE__ */ (() => {
   return {
     onPageScroll: 1,
     onShareAppMessage: 1 << 1,
-    onShareTimeline: 1 << 2
+    onShareTimeline: 1 << 2,
+    onShareChat: 1 << 3
   };
 })();
 function isUniLifecycleHook(name, value, checkType = true) {
@@ -6493,9 +6494,9 @@ function populateParameters(fromRes, toRes) {
     appVersion: "1.0.0",
     appVersionCode: "100",
     appLanguage: getAppLanguage(hostLanguage),
-    uniCompileVersion: "4.76",
-    uniCompilerVersion: "4.76",
-    uniRuntimeVersion: "4.76",
+    uniCompileVersion: "4.84",
+    uniCompilerVersion: "4.84",
+    uniRuntimeVersion: "4.84",
     uniPlatform: "mp-weixin",
     deviceBrand,
     deviceModel: model,
@@ -6644,9 +6645,9 @@ const getAppBaseInfo = {
       appLanguage: getAppLanguage(hostLanguage),
       isUniAppX: false,
       uniPlatform: "mp-weixin",
-      uniCompileVersion: "4.76",
-      uniCompilerVersion: "4.76",
-      uniRuntimeVersion: "4.76"
+      uniCompileVersion: "4.84",
+      uniCompilerVersion: "4.84",
+      uniRuntimeVersion: "4.84"
     };
     extend(toRes, parameters);
   }
@@ -6997,18 +6998,22 @@ function initOnError() {
       originalConsole.error(err);
     }
   }
-  if (typeof index.onError === "function") {
-    index.onError(onError2);
-  }
-  if (typeof index.onUnhandledRejection === "function") {
-    index.onUnhandledRejection(onError2);
+  if (typeof index !== "undefined") {
+    if (typeof index.onError === "function") {
+      index.onError(onError2);
+    }
+    if (typeof index.onUnhandledRejection === "function") {
+      index.onUnhandledRejection(onError2);
+    }
   }
   return function offError2() {
-    if (typeof index.offError === "function") {
-      index.offError(onError2);
-    }
-    if (typeof index.offUnhandledRejection === "function") {
-      index.offUnhandledRejection(onError2);
+    if (typeof index !== "undefined") {
+      if (typeof index.offError === "function") {
+        index.offError(onError2);
+      }
+      if (typeof index.offUnhandledRejection === "function") {
+        index.offUnhandledRejection(onError2);
+      }
     }
   };
 }
@@ -7388,7 +7393,7 @@ function isConsoleWritable() {
 function initRuntimeSocketService() {
   const hosts = "172.26.80.1,192.168.1.2,10.1.1.1,127.0.0.1";
   const port = "8090";
-  const id = "mp-weixin_fl9TVu";
+  const id = "mp-weixin_E3lPsf";
   const lazy = typeof swan !== "undefined";
   let restoreError = lazy ? () => {
   } : initOnError();
@@ -8338,7 +8343,15 @@ const pages = [
   {
     path: "pages/blog/list",
     style: {
+      navigationStyle: "custom",
       navigationBarTitleText: ""
+    }
+  },
+  {
+    path: "pages/self/self",
+    style: {
+      navigationStyle: "custom",
+      navigationBarTitleText: "我的"
     }
   },
   {
@@ -8554,7 +8567,31 @@ const pages = [
   {
     path: "pages/blog/edit",
     style: {
+      navigationBarTitleText: "编辑"
+    }
+  },
+  {
+    path: "pages/self/item",
+    style: {
       navigationBarTitleText: ""
+    }
+  },
+  {
+    path: "pages/blog/detail",
+    style: {
+      navigationBarTitleText: ""
+    }
+  },
+  {
+    path: "pages/self/editSelf",
+    style: {
+      navigationBarTitleText: "编辑个人信息"
+    }
+  },
+  {
+    path: "pages/self/favorites",
+    style: {
+      navigationBarTitleText: "我的收藏"
     }
   }
 ];
@@ -8564,18 +8601,39 @@ const globalStyle = {
   navigationBarBackgroundColor: "#F8F8F8",
   backgroundColor: "#F8F8F8"
 };
+const tabBar = {
+  color: "#333",
+  selectedColor: "#74dbef",
+  list: [
+    {
+      text: "首页",
+      pagePath: "pages/blog/list",
+      iconPath: "/static/logo/home.png",
+      selectedIconPath: "/static/logo/home-h.png"
+    },
+    {
+      text: "我的",
+      pagePath: "pages/self/self",
+      iconPath: "/static/logo/self.png",
+      selectedIconPath: "/static/logo/self-h.png"
+    }
+  ]
+};
 const uniIdRouter = {
+  loginPage: "uni_modules/uni-id-pages/pages/login/login-withoutpwd",
   needLogin: [
     "pages/blog/.*",
     "pages/wallpaper/piclist",
     "pages/wallpaper/classify",
-    "pages/articles/.*"
+    "pages/articles/.*",
+    "pages/self/.*"
   ],
   resToLogin: true
 };
 const pagesJson = {
   pages,
   globalStyle,
+  tabBar,
   uniIdRouter
 };
 var define_process_env_UNI_SECURE_NETWORK_CONFIG_default = [];
@@ -8903,7 +8961,7 @@ class S {
 function T(e2) {
   return e2 && "string" == typeof e2 ? JSON.parse(e2) : e2;
 }
-const b = true, E = "mp-weixin", A = T(define_process_env_UNI_SECURE_NETWORK_CONFIG_default), P = E, C = T('{"address":["127.0.0.1","172.26.80.1","192.168.1.4","10.1.1.1"],"servePort":7000,"debugPort":9000,"initialLaunchType":"remote","skipFiles":["<node_internals>/**","E:/movie/HBuilderX.4.57.2025032507/HBuilderX/plugins/unicloud/**/*.js"]}'), O = T('[{"provider":"alipay","spaceName":"zfb-demo","spaceId":"env-00jxtt1yppya","spaceAppId":"2021005176658369","accessKey":"3czBOclNFKaAdGdL","secretKey":"LbXD2EJnJIXfhuB9"}]') || [];
+const b = true, E = "mp-weixin", A = T(define_process_env_UNI_SECURE_NETWORK_CONFIG_default), P = E, C = T('{"address":["127.0.0.1","172.26.80.1","192.168.1.2","10.1.1.1"],"servePort":7000,"debugPort":9000,"initialLaunchType":"remote","skipFiles":["<node_internals>/**","E:/movie/HBuilderX.4.57.2025032507/HBuilderX/plugins/unicloud/**/*.js"]}'), O = T('[{"provider":"alipay","spaceName":"zfb-demo","spaceId":"env-00jxtt1yppya","spaceAppId":"2021005176658369","accessKey":"3czBOclNFKaAdGdL","secretKey":"LbXD2EJnJIXfhuB9"}]') || [];
 let N = "";
 try {
   N = "__UNI__B858315";
@@ -10270,7 +10328,7 @@ function Mt({ url: e2, data: t2, method: n2 = "POST", headers: s2 = {}, timeout:
   });
 }
 function qt(e2, t2) {
-  const { path: n2, data: s2, method: r2 = "GET" } = e2, { url: i2, headers: o2 } = Dt(n2, { functionName: "", data: s2, method: r2, headers: { "x-alipay-cloud-mode": "oss", "x-data-api-type": "oss", "x-expire-timestamp": Date.now() + 6e4 }, signHeaderKeys: ["x-data-api-type", "x-expire-timestamp"], config: t2 });
+  const { path: n2, data: s2, method: r2 = "GET" } = e2, { url: i2, headers: o2 } = Dt(n2, { functionName: "", data: s2, method: r2, headers: { "x-alipay-cloud-mode": "oss", "x-data-api-type": "oss", "x-expire-timestamp": String(Date.now() + 6e4) }, signHeaderKeys: ["x-data-api-type", "x-expire-timestamp"], config: t2 });
   return Mt({ url: i2, data: s2, method: r2, headers: o2 }).then((e3) => {
     const t3 = e3.data || {};
     if (!t3.success)
@@ -11426,9 +11484,9 @@ let er = new class {
 })();
 var tr = er;
 var define_process_env_UNI_STATISTICS_CONFIG_default = { enable: true };
-var define_process_env_UNI_STAT_TITLE_JSON_default = { "pages/demo-user/list": "列表", "pages/index/index": "uni-app", "pages/demo-user/add": "新增", "pages/demo-user/edit": "编辑", "pages/demo-user/detail": "详情", "pages/demo0719/list": "列表", "pages/demo0719/detail": "详情", "pages/demo0719/update": "更新", "uni_modules/uni-id-pages/pages/register/register": "注册", "uni_modules/uni-id-pages/pages/login/login-withoutpwd": "登录", "uni_modules/uni-id-pages/pages/login/login-withpwd": "账号密码登录", "uni_modules/uni-id-pages/pages/login/login-smscode": "手机验证码登录", "uni_modules/uni-id-pages/pages/userinfo/userinfo": "个人资料", "uni_modules/uni-id-pages/pages/userinfo/bind-mobile/bind-mobile": "绑定手机号码", "uni_modules/uni-id-pages/pages/register/register-by-email": "邮箱验证码注册", "uni_modules/uni-id-pages/pages/retrieve/retrieve": "重置密码", "uni_modules/uni-id-pages/pages/retrieve/retrieve-by-email": "通过邮箱重置密码", "uni_modules/uni-id-pages/pages/userinfo/change_pwd/change_pwd": "修改密码", "uni_modules/uni-id-pages/pages/register/register-admin": "注册管理员账号", "uni_modules/uni-id-pages/pages/userinfo/set-pwd/set-pwd": "设置密码", "uni_modules/uni-id-pages/pages/userinfo/deactivate/deactivate": "注销账号", "uni_modules/uni-id-pages/pages/userinfo/realname-verify/realname-verify": "实名认证", "pages/articles/list": "文章列表" };
+var define_process_env_UNI_STAT_TITLE_JSON_default = { "pages/self/self": "我的", "pages/demo-user/list": "列表", "pages/index/index": "uni-app", "pages/demo-user/add": "新增", "pages/demo-user/edit": "编辑", "pages/demo-user/detail": "详情", "pages/demo0719/list": "列表", "pages/demo0719/detail": "详情", "pages/demo0719/update": "更新", "uni_modules/uni-id-pages/pages/register/register": "注册", "uni_modules/uni-id-pages/pages/login/login-withoutpwd": "登录", "uni_modules/uni-id-pages/pages/login/login-withpwd": "账号密码登录", "uni_modules/uni-id-pages/pages/login/login-smscode": "手机验证码登录", "uni_modules/uni-id-pages/pages/userinfo/userinfo": "个人资料", "uni_modules/uni-id-pages/pages/userinfo/bind-mobile/bind-mobile": "绑定手机号码", "uni_modules/uni-id-pages/pages/register/register-by-email": "邮箱验证码注册", "uni_modules/uni-id-pages/pages/retrieve/retrieve": "重置密码", "uni_modules/uni-id-pages/pages/retrieve/retrieve-by-email": "通过邮箱重置密码", "uni_modules/uni-id-pages/pages/userinfo/change_pwd/change_pwd": "修改密码", "uni_modules/uni-id-pages/pages/register/register-admin": "注册管理员账号", "uni_modules/uni-id-pages/pages/userinfo/set-pwd/set-pwd": "设置密码", "uni_modules/uni-id-pages/pages/userinfo/deactivate/deactivate": "注销账号", "uni_modules/uni-id-pages/pages/userinfo/realname-verify/realname-verify": "实名认证", "pages/articles/list": "文章列表", "pages/blog/edit": "编辑", "pages/self/editSelf": "编辑个人信息", "pages/self/favorites": "我的收藏" };
 const sys = index.getSystemInfoSync();
-const STAT_VERSION = "4.76";
+const STAT_VERSION = "4.84";
 const STAT_URL = "https://tongji.dcloud.io/uni/stat";
 const STAT_H5_URL = "https://tongji.dcloud.io/uni/stat.gif";
 const PAGE_PVER_TIME = 1800;
@@ -12579,6 +12637,16 @@ const shallowSsrRef = (value, key) => {
 const createLifeCycleHook = (lifecycle, flag = 0) => (hook, target = getCurrentInstance()) => {
   !isInSSRComponentSetup && injectHook(lifecycle, hook, target);
 };
+const onShow = /* @__PURE__ */ createLifeCycleHook(
+  ON_SHOW,
+  1 | 2
+  /* HookFlags.PAGE */
+);
+const onHide = /* @__PURE__ */ createLifeCycleHook(
+  ON_HIDE,
+  1 | 2
+  /* HookFlags.PAGE */
+);
 const onLoad = /* @__PURE__ */ createLifeCycleHook(
   ON_LOAD,
   2
@@ -12591,6 +12659,11 @@ const onUnload = /* @__PURE__ */ createLifeCycleHook(
 );
 const onReachBottom = /* @__PURE__ */ createLifeCycleHook(
   ON_REACH_BOTTOM,
+  2
+  /* HookFlags.PAGE */
+);
+const onPullDownRefresh = /* @__PURE__ */ createLifeCycleHook(
+  ON_PULL_DOWN_REFRESH,
   2
   /* HookFlags.PAGE */
 );
@@ -12939,11 +13012,16 @@ exports.initVueI18n = initVueI18n;
 exports.m = m$1;
 exports.messages = messages;
 exports.n = n$1;
+exports.nextTick$1 = nextTick$1;
 exports.o = o$1;
+exports.onHide = onHide;
 exports.onLoad = onLoad;
 exports.onMounted = onMounted;
+exports.onPullDownRefresh = onPullDownRefresh;
 exports.onReachBottom = onReachBottom;
+exports.onShow = onShow;
 exports.onUnload = onUnload;
+exports.onUnmounted = onUnmounted;
 exports.p = p$1;
 exports.pagesJson = pagesJson;
 exports.r = r$1;

@@ -1,0 +1,1 @@
+<view wx:for="{{a}}" wx:for-item="item" wx:key="b" class=""><self-item u-i="{{item.a}}" bind:__l="__l"></self-item></view>

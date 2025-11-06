@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/blog/list",
+    "pages/self/self",
     "pages/wallpaper/piclist",
     "pages/demo-user/list",
     "pages/index/index",
@@ -35,13 +36,35 @@
     "uni_modules/uni-id-pages/pages/userinfo/realname-verify/realname-verify",
     "pages/articles/articles",
     "pages/articles/list",
-    "pages/blog/edit"
+    "pages/blog/edit",
+    "pages/self/item",
+    "pages/blog/detail",
+    "pages/self/editSelf",
+    "pages/self/favorites"
   ],
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#fff",
     "navigationBarTitleText": "路线规划",
     "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "color": "#333",
+    "selectedColor": "#74dbef",
+    "list": [
+      {
+        "text": "首页",
+        "pagePath": "pages/blog/list",
+        "iconPath": "/static/logo/home.png",
+        "selectedIconPath": "/static/logo/home-h.png"
+      },
+      {
+        "text": "我的",
+        "pagePath": "pages/self/self",
+        "iconPath": "/static/logo/self.png",
+        "selectedIconPath": "/static/logo/self-h.png"
+      }
+    ]
   },
   "plugins": {
     "route-plan": {

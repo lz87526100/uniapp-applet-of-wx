@@ -1,0 +1,93 @@
+@font-face {
+  font-family: "iconfont"; /* Project id 4166412 */
+  src: url('./iconfont.ttf?t=1710340800681') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.xxm-delete-fill:before {
+  content: "\e863";
+}
+
+.xxm-hourglass-fill:before {
+  content: "\e867";
+}
+
+.xxm-experiment-fill:before {
+  content: "\e869";
+}
+
+.xxm-api-fill:before {
+  content: "\e86d";
+}
+
+.xxm-pushpin-fill:before {
+  content: "\e86e";
+}
+
+.xxm-heart-fill:before {
+  content: "\e8b3";
+}
+
+.xxm-message-fill:before {
+  content: "\e8b6";
+}
+
+.xxm-appstore-fill:before {
+  content: "\e8cc";
+}
+
+.xxm-folder-fill:before {
+  content: "\e8e7";
+}
+
+.xxm-folder-open-fill:before {
+  content: "\e8e8";
+}
+
+.xxm-notification-fill:before {
+  content: "\e8f4";
+}
+
+.xxm-flag-fill:before {
+  content: "\e8f5";
+}
+
+.xxm-like-fill:before {
+  content: "\e90b";
+}
+
+.xxm-star-fill:before {
+  content: "\e90e";
+}
+
+.xxm-highlight-fill:before {
+  content: "\e912";
+}
+
+.xxm-edit-fill:before {
+  content: "\e914";
+}
+
+.xxm-rocket-fill:before {
+  content: "\e916";
+}
+
+.xxm-thunderbolt-fill:before {
+  content: "\e917";
+}
+
+.xxm-mail-fill:before {
+  content: "\e91f";
+}
+
+.xxm-setting-fill:before {
+  content: "\e923";
+}
+

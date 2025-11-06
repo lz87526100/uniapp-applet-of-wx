@@ -10,7 +10,7 @@
       "list": [
         {
           "name": "pages/demo1009/demo1009",
-          "pathName": "uni_modules/uni-id-pages/pages/login/login-withoutpwd",
+          "pathName": "pages/self/self",
           "query": "",
           "scene": null,
           "launchMode": "default"

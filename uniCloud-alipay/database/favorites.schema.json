@@ -1,0 +1,32 @@
+{
+  "bsonType": "object",
+  "required": ["article_id", "user_id", "create_date"],
+  "permission": {
+    "read": "doc.user_id == auth.uid",
+    "create": "auth.uid != null",
+    "update": "doc.user_id == auth.uid",
+    "delete": "doc.user_id == auth.uid"
+  },
+  "properties": {
+    "_id": {
+      "description": "ID，系统自动生成"
+    },
+    "article_id": {
+      "bsonType": "string",
+      "description": "文章ID",
+      "foreignKey": "demo-articles._id"
+    },
+    "user_id": {
+      "bsonType": "string",
+      "description": "用户ID",
+      "foreignKey": "uni-id-users._id"
+    },
+    "create_date": {
+      "bsonType": "timestamp",
+      "description": "收藏时间",
+      "forceDefaultValue": {
+        "$env": "now"
+      }
+    }
+  }
+}

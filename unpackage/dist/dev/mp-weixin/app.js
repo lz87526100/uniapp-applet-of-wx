@@ -3,6 +3,7 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
 const common_vendor = require("./common/vendor.js");
 if (!Math) {
   "./pages/blog/list.js";
+  "./pages/self/self.js";
   "./pages/wallpaper/piclist.js";
   "./pages/demo-user/list.js";
   "./pages/index/index.js";
@@ -38,16 +39,20 @@ if (!Math) {
   "./pages/articles/articles.js";
   "./pages/articles/list.js";
   "./pages/blog/edit.js";
+  "./pages/self/item.js";
+  "./pages/blog/detail.js";
+  "./pages/self/editSelf.js";
+  "./pages/self/favorites.js";
 }
 const _sfc_main = {
-  onLaunch: function() {
-    common_vendor.index.__f__("log", "at App.vue:4", "App Launch");
+  onLaunch() {
+    common_vendor.index.__f__("log", "at App.vue:5", "App Launch");
   },
-  onShow: function() {
-    common_vendor.index.__f__("log", "at App.vue:7", "App Show");
+  onShow() {
+    common_vendor.index.__f__("log", "at App.vue:8", "App Show");
   },
-  onHide: function() {
-    common_vendor.index.__f__("log", "at App.vue:10", "App Hide");
+  onHide() {
+    common_vendor.index.__f__("log", "at App.vue:11", "App Hide");
   }
 };
 function createApp() {

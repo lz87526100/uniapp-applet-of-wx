@@ -1,0 +1,18 @@
+$brand-theme-color:#74dbef;
+$brand-theme-color-aux:#576b95;  //品牌辅助色
+$page-bg-color:#F7F7F7;          //页面背景色
+$border-color:#e0e0e0;           //边框颜色
+$border-color-light:#efefef;     //边框亮色
+
+$text-font-color-1:#000;         //文字主色
+$text-font-color-2:#676767;      //副标题颜色
+$text-font-color-3:#a7a7a7;      //浅色
+$text-font-color-4:#b2b2b2;      //更浅色
+
+
+@mixin maxline($row:none){
+	display: -webkit-box; /* 将元素作为块状容器 */
+	-webkit-line-clamp: $row; /* 限制显示的最大行数为3行 */
+	-webkit-box-orient: vertical; /* 设置子元素垂直布局 */
+	overflow: hidden; /* 超出容器范围的内容不显示 */
+}

@@ -7,7 +7,10 @@
     "transformPx" : false,
     /* 5+App特有相关 */
     "app-plus" : {
-        "usingComponents" : true,
+        "uniCloud": {
+            "local调试端口": 7001
+          },
+        "usingComponents":true,
         "nvueStyleCompiler" : "uni-app",
         "compilerVersion" : 3,
         "splashscreen" : {

@@ -5,7 +5,7 @@ const word = {
 
 const sentence = {
   'uni-id-token-expired': '登录状态失效，token已过期',
-  'uni-id-check-token-failed': 'token校验未通过',
+  'uni-id-check-token-failed': '用户未登录，请回到登录页面',
   'uni-id-account-exists': '此账号已注册',
   'uni-id-account-not-exists': '此账号未注册',
   'uni-id-account-not-exists-in-current-app': '此账号未在该应用注册',

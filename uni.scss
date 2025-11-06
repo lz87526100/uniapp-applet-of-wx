@@ -70,7 +70,9 @@ $uni-opacity-disabled: 0.3; // 组件禁用态的透明度
 /* 文章场景相关 */
 $uni-color-title: #2C405A; // 文章标题颜色
 $uni-font-size-title:20px;
-$uni-color-subtitle: #555555; // 二级标题颜色
+$uni-color-subtitle: #555555; // 二级标题颜色s
 $uni-font-size-subtitle:26px;
 $uni-color-paragraph: #3F536E; // 文章段落颜色
 $uni-font-size-paragraph:15px;
+
+@import "@/common/style/base-style.scss";

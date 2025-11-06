@@ -23,21 +23,163 @@
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
-.layout .content.data-v-42e95e20 {
+.layout.data-v-42e95e20 {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   padding: 30rpx;
 }
-.layout .content .textarea.data-v-42e95e20 {
-  font-size: 38rpx;
-  width: 100%;
-  line-height: 1.7em;
-  min-height: 200rpx;
+.header.data-v-42e95e20 {
+  text-align: center;
+  margin-bottom: 20rpx;
+  padding: 40rpx 0 20rpx 0;
 }
-.layout .pics.data-v-42e95e20 {
-  padding: 30rpx;
+.header .header-title.data-v-42e95e20 {
+  display: block;
+  font-size: 48rpx;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 12rpx;
 }
-.layout .btns.data-v-42e95e20 {
-  padding: 30rpx;
+.header .header-desc.data-v-42e95e20 {
+  font-size: 28rpx;
+  color: #7f8c8d;
 }
-.layout .btns button.data-v-42e95e20 {
-  width: 100%;
+.content-card.data-v-42e95e20 {
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.08);
+}
+.content-card .card-header.data-v-42e95e20 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 1rpx solid #f1f2f6;
+}
+.content-card .card-header .card-title.data-v-42e95e20 {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #2c3e50;
+}
+.content-card .card-header .word-count.data-v-42e95e20, .content-card .card-header .pic-count.data-v-42e95e20 {
+  font-size: 26rpx;
+  color: #95a5a6;
+}
+.textarea.data-v-42e95e20 {
+  font-size: 34rpx;
+  width: 92%;
+  line-height: 1.8em;
+  min-height: 240rpx;
+  color: #2c3e50;
+  background: #fafbfc;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  border: 1rpx solid #e1e8ed;
+  transition: all 0.3s ease;
+}
+.textarea.data-v-42e95e20:focus {
+  border-color: #3498db;
+  background: #ffffff;
+  box-shadow: 0 0 0 2rpx rgba(52, 152, 219, 0.1);
+}
+.placeholder.data-v-42e95e20 {
+  color: #bdc3c7;
+  font-size: 32rpx;
+}
+.pics.data-v-42e95e20 {
+  padding: 0;
+}
+.footer.data-v-42e95e20 {
+  padding: 40rpx 0;
+}
+.footer .submit-btn.data-v-42e95e20 {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 50rpx;
+  height: 96rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 34rpx;
+  font-weight: 600;
+  box-shadow: 0 12rpx 32rpx rgba(102, 126, 234, 0.4);
+  transition: all 0.3s ease;
+}
+.footer .submit-btn .btn-text.data-v-42e95e20 {
+  margin-right: 12rpx;
+}
+.footer .submit-btn .btn-icon.data-v-42e95e20 {
+  font-size: 28rpx;
+  transition: transform 0.3s ease;
+}
+.footer .submit-btn.data-v-42e95e20:active {
+  transform: translateY(2rpx);
+  box-shadow: 0 6rpx 20rpx rgba(102, 126, 234, 0.4);
+}
+.footer .submit-btn:active .btn-icon.data-v-42e95e20 {
+  transform: translateX(4rpx);
+}
+.footer .submit-btn-disabled.data-v-42e95e20 {
+  background: linear-gradient(135deg, #bdc3c7 0%, #95a5a6 100%);
+  box-shadow: none;
+  color: #ecf0f1;
+}
+.footer .submit-btn-disabled.data-v-42e95e20:active {
+  transform: none;
+  box-shadow: none;
+}
+.tips.data-v-42e95e20 {
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 16rpx;
+  padding: 24rpx 32rpx;
+  margin-top: 20rpx;
+}
+.tips .tip-text.data-v-42e95e20 {
+  display: block;
+  font-size: 24rpx;
+  color: #7f8c8d;
+  line-height: 1.6em;
+  margin-bottom: 8rpx;
+}
+
+/* 响应式设计 */
+@media (max-width: 750rpx) {
+.layout.data-v-42e95e20 {
+    padding: 20rpx;
+}
+.content-card.data-v-42e95e20 {
+    padding: 24rpx;
+    border-radius: 20rpx;
+}
+.textarea.data-v-42e95e20 {
+    font-size: 32rpx;
+    min-height: 200rpx;
+}
+}
+/* 暗色模式支持 */
+@media (prefers-color-scheme: dark) {
+.layout.data-v-42e95e20 {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+}
+.content-card.data-v-42e95e20 {
+    background: #2c3e50;
+}
+.content-card .card-title.data-v-42e95e20 {
+    color: #ecf0f1;
+}
+.textarea.data-v-42e95e20 {
+    background: #34495e;
+    color: #ecf0f1;
+    border-color: #4a6572;
+}
+.textarea.data-v-42e95e20:focus {
+    border-color: #3498db;
+}
+.placeholder.data-v-42e95e20 {
+    color: #95a5a6;
+}
 }

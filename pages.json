@@ -291,6 +291,7 @@
 {
     "path": "pages/shopList/shopDetail",
     "style": {
+        "navigationBarTitleText": "合并提交仓库测试",
         "navigationStyle": "custom",
         "navigationBarTitleText": ""
     }

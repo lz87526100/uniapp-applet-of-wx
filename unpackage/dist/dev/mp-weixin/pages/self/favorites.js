@@ -26,6 +26,15 @@ const _sfc_main = {
     const finished = common_vendor.ref(false);
     const scrollTop = common_vendor.ref(0);
     const canRefresh = common_vendor.ref(true);
+    function goToDetail(item) {
+      if (!item || !item.article_id) {
+        common_vendor.index.showToast({ title: "文章信息错误", icon: "none" });
+        return;
+      }
+      common_vendor.index.navigateTo({
+        url: `/pages/blog/detail?id=${item.article_id}`
+      });
+    }
     const visibleItems = common_vendor.computed(() => {
       if (favoritesList.value.length <= 15) {
         return favoritesList.value;
@@ -92,7 +101,7 @@ const _sfc_main = {
             height: Number(pic.height) || 200
           };
         } catch (error) {
-          common_vendor.index.__f__("warn", "at pages/self/favorites.vue:214", "清理图片数据失败:", error);
+          common_vendor.index.__f__("warn", "at pages/self/favorites.vue:227", "清理图片数据失败:", error);
           return null;
         }
       }).filter((pic) => pic !== null).slice(0, 9);
@@ -137,11 +146,11 @@ const _sfc_main = {
     }
     function onImageLoad(e) {
       const { url, index } = e.currentTarget.dataset;
-      common_vendor.index.__f__("log", "at pages/self/favorites.vue:266", "图片加载成功:", url);
+      common_vendor.index.__f__("log", "at pages/self/favorites.vue:279", "图片加载成功:", url);
     }
     function onImageError(e) {
       const { url, index } = e.currentTarget.dataset;
-      common_vendor.index.__f__("warn", "at pages/self/favorites.vue:271", "图片加载失败:", url);
+      common_vendor.index.__f__("warn", "at pages/self/favorites.vue:284", "图片加载失败:", url);
     }
     let previewTimer = null;
     function previewImage(pics, currentIndex) {
@@ -167,7 +176,7 @@ const _sfc_main = {
         favoritesList.value = favorites.map(cleanFavoriteItem);
         await common_vendor.nextTick$1();
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/self/favorites.vue:308", "加载收藏列表失败:", error);
+        common_vendor.index.__f__("error", "at pages/self/favorites.vue:321", "加载收藏列表失败:", error);
         common_vendor.index.showToast({ title: "加载失败", icon: "none" });
       } finally {
         loading.value = false;
@@ -196,7 +205,7 @@ const _sfc_main = {
             loadFavoritesData();
           }
         } catch (error) {
-          common_vendor.index.__f__("error", "at pages/self/favorites.vue:341", "取消收藏失败:", error);
+          common_vendor.index.__f__("error", "at pages/self/favorites.vue:354", "取消收藏失败:", error);
           common_vendor.index.showToast({ title: "取消收藏失败", icon: "none" });
         }
       }
@@ -258,7 +267,7 @@ const _sfc_main = {
             i: "79688c99-4-" + i0,
             j: common_vendor.o(($event) => removeFavorite(item.article_id), item._id + "_" + item.article_id),
             k: item._id + "_" + item.article_id,
-            l: common_vendor.o(($event) => _ctx.goToDetail(item), item._id + "_" + item.article_id)
+            l: common_vendor.o(($event) => goToDetail(item), item._id + "_" + item.article_id)
           });
         }),
         h: common_vendor.p({

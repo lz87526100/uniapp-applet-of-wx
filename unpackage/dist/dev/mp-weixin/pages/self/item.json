@@ -1,6 +1,4 @@
 {
   "navigationBarTitleText": "",
-  "usingComponents": {
-    "self-item": "../../components/self-item/self-item"
-  }
+  "usingComponents": {}
 }

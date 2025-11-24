@@ -92,101 +92,159 @@
 /* -------------------- 卡片 -------------------- */
 .card.data-v-f909dea6 {
   background: #fff;
-  border-radius: 32rpx;
-  padding: 32rpx;
-  margin-bottom: 24rpx;
+  border-radius: 24rpx;
+  padding: 0;
+  margin: 0 24rpx 24rpx;
   box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.08);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  /* 商家评价卡片特殊样式 */
+  /* 卡片内容区域 - 可点击 */
+  /* 底部工具栏 - 用户名和评论 */
 }
 .card.data-v-f909dea6:active {
   transform: scale(0.98);
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.12);
 }
-.card .userinfo.data-v-f909dea6 {
-  display: flex;
-  align-items: center;
-  margin-bottom: 20rpx;
+.card .card-content.data-v-f909dea6 {
+  /* 图片区域 */
+  /* 标题区域 */
 }
-.card .userinfo .avatar.data-v-f909dea6 {
-  width: 72rpx;
-  height: 72rpx;
-  border-radius: 50%;
-  border: 4rpx solid #fff;
-  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
-  margin-right: 16rpx;
+.card .card-content .image-area .content-image.data-v-f909dea6 {
+  width: 100%;
+  height: 400rpx;
+  background-color: #f5f5f5;
 }
-.card .userinfo .username.data-v-f909dea6 {
-  font-size: 30rpx;
-  font-weight: 600;
-  color: #4F8BFF;
+.card .card-content .title-area.data-v-f909dea6 {
+  padding: 20rpx 24rpx 16rpx;
 }
-.card .userinfo .time.data-v-f909dea6 {
-  margin-left: auto;
-  font-size: 24rpx;
-  color: #8B9AB6;
-}
-.card .content .text.data-v-f909dea6 {
-  font-size: 34rpx;
-  line-height: 1.8em;
+.card .card-content .title-area .title.data-v-f909dea6 {
+  font-size: 32rpx;
+  font-weight: 700;
   color: #222;
+  line-height: 1.4;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-.card .content .pics.data-v-f909dea6 {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12rpx;
-  margin-top: 20rpx;
-}
-.card .pic.data-v-f909dea6 {
-  width: 38%;
-  height: 38%;
-  border-radius: 12rpx;
-  aspect-ratio: 1;
   overflow: hidden;
 }
 .card .toolbar.data-v-f909dea6 {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 24rpx;
+  padding: 16rpx 24rpx 24rpx;
+  background: #fff;
+  border-top: 1rpx solid #f0f0f0;
 }
-.card .toolbar .left .read.data-v-f909dea6 {
-  font-size: 24rpx;
-  color: #8B9AB6;
+.card .toolbar .content-area.data-v-f909dea6 {
+  flex: 1;
+  /* 用户信息和评论区域 */
 }
-.card .toolbar .right.data-v-f909dea6 {
+.card .toolbar .content-area .user-comment-area.data-v-f909dea6 {
   display: flex;
   align-items: center;
   gap: 16rpx;
+  /* 商家信息样式 */
 }
-.card .toolbar .right .favorite-btn.data-v-f909dea6 {
-  width: 56rpx;
-  height: 56rpx;
+.card .toolbar .content-area .user-comment-area .user-info.data-v-f909dea6 {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  min-width: 120rpx;
+}
+.card .toolbar .content-area .user-comment-area .user-info .user-avatar.data-v-f909dea6 {
+  width: 48rpx;
+  height: 48rpx;
   border-radius: 50%;
-  background: #f5f5f5;
+  border: 2rpx solid #f0f0f0;
+}
+.card .toolbar .content-area .user-comment-area .user-info .username.data-v-f909dea6 {
+  font-size: 24rpx;
+  color: #666;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.card .toolbar .content-area .user-comment-area .shop-info.data-v-f909dea6 {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  min-width: 120rpx;
+}
+.card .toolbar .content-area .user-comment-area .shop-info .shop-avatar.data-v-f909dea6 {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 12rpx;
+  /* 商家头像用圆角矩形 */
+  border: 2rpx solid #f0f0f0;
+}
+.card .toolbar .content-area .user-comment-area .shop-info .shop-name.data-v-f909dea6 {
+  font-size: 24rpx;
+  color: #FF6B35;
+  /* 商家名称用特殊颜色 */
+  font-weight: 600;
+  white-space: nowrap;
+}
+.card .toolbar .content-area .user-comment-area .shop-info .shop-rating.data-v-f909dea6 {
+  display: flex;
+  align-items: center;
+  background: #FFF8E1;
+  padding: 4rpx 8rpx;
+  border-radius: 8rpx;
+  margin-left: 8rpx;
+}
+.card .toolbar .content-area .user-comment-area .shop-info .shop-rating .rating-star.data-v-f909dea6 {
+  color: #FFD700;
+  font-size: 20rpx;
+  margin-right: 2rpx;
+}
+.card .toolbar .content-area .user-comment-area .shop-info .shop-rating .rating-value.data-v-f909dea6 {
+  font-size: 20rpx;
+  color: #FF6B35;
+  font-weight: 600;
+}
+.card .toolbar .content-area .user-comment-area .comment-content.data-v-f909dea6 {
+  flex: 1;
+}
+.card .toolbar .content-area .user-comment-area .comment-content .comment-text.data-v-f909dea6 {
+  font-size: 26rpx;
+  color: #333;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.card .toolbar .right-actions.data-v-f909dea6 {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-left: 16rpx;
+}
+.card .toolbar .right-actions .favorite-btn.data-v-f909dea6 {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 50%;
+  background: #f8f8f8;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
 }
-.card .toolbar .right .favorite-btn.data-v-f909dea6:active {
+.card .toolbar .right-actions .favorite-btn.data-v-f909dea6:active {
   transform: scale(0.9);
   background: #e0e0e0;
 }
-.card .toolbar .right .delete.data-v-f909dea6 {
-  width: 56rpx;
-  height: 56rpx;
+.card .toolbar .right-actions .delete.data-v-f909dea6 {
+  width: 48rpx;
+  height: 48rpx;
   border-radius: 50%;
   background: linear-gradient(135deg, #FF5B5B 0%, #FF8A8A 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4rpx 12rpx rgba(255, 91, 91, 0.35);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s ease;
 }
-.card .toolbar .right .delete.data-v-f909dea6:active {
+.card .toolbar .right-actions .delete.data-v-f909dea6:active {
   transform: scale(0.9);
 }
 .footer.data-v-f909dea6 {

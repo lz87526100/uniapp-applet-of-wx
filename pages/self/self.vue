@@ -24,21 +24,20 @@
         <!-- 功能卡片 -->
         <view class="cardLayout">
             <view class="list">
-                <navigator url="/pages/self/item" hover-class="item-active">
-                    <view class="item" hover-class="item-active">
-                        <view class="left">
-                            <view class="icon" style="background-image: linear-gradient(135deg, #6fcf97, #4bc0c8);">
-                                <uni-icons custom-prefix="iconfont" type="xxm-highlight-fill" size="18"
-                                    color="#fff"></uni-icons>
-                            </view>
-                            <view class="name">我的锐评</view>
+                <!-- 修改：传递当前用户ID到item页面 -->
+                <view class="item" hover-class="item-active" @click="goToMyComments">
+                    <view class="left">
+                        <view class="icon" style="background-image: linear-gradient(135deg, #6fcf97, #4bc0c8);">
+                            <uni-icons custom-prefix="iconfont" type="xxm-highlight-fill" size="18"
+                                color="#fff"></uni-icons>
                         </view>
-                        <view class="right">
-                            <text class="count">33</text>
-                            <uni-icons type="right" size="22" color="#ccc"></uni-icons>
-                        </view>
+                        <view class="name">我的锐评</view>
                     </view>
-                </navigator>
+                    <view class="right">
+                        <text class="count">{{ myCommentsCount }}</text>
+                        <uni-icons type="right" size="22" color="#ccc"></uni-icons>
+                    </view>
+                </view>
 
                 <navigator url="" hover-class="item-active">
                     <view class="item" hover-class="item-active">
@@ -55,21 +54,21 @@
                     </view>
                 </navigator>
 
-          <navigator url="/pages/self/favorites" hover-class="item-active">
-              <view class="item" hover-class="item-active">
-                <view class="left">
-                  <view class="icon" style="background-image: linear-gradient(135deg, #ffc857, #ff9a3c);">
-                    <uni-icons custom-prefix="iconfont" type="xxm-star-fill" size="18" color="#fff"></uni-icons>
-                  </view>
-                  <view class="name">我的收藏</view>
-                </view>
-                <view class="right">
-                  <!-- 使用 favoritesCount 而不是 count -->
-                  <text class="count">{{ favoritesCount }}</text>
-                  <uni-icons type="right" size="22" color="#ccc"></uni-icons>
-                </view>
-              </view>
-            </navigator>
+                <navigator url="/pages/self/favorites" hover-class="item-active">
+                    <view class="item" hover-class="item-active">
+                        <view class="left">
+                            <view class="icon" style="background-image: linear-gradient(135deg, #ffc857, #ff9a3c);">
+                                <uni-icons custom-prefix="iconfont" type="xxm-star-fill" size="18" color="#fff"></uni-icons>
+                            </view>
+                            <view class="name">我的收藏</view>
+                        </view>
+                        <view class="right">
+                            <!-- 使用 favoritesCount 而不是 count -->
+                            <text class="count">{{ favoritesCount }}</text>
+                            <uni-icons type="right" size="22" color="#ccc"></uni-icons>
+                        </view>
+                    </view>
+                </navigator>
                 
                 <navigator url="" hover-class="item-active">
                     <view class="item" hover-class="item-active">
@@ -128,13 +127,74 @@ import { onShow, onPullDownRefresh, onLoad } from '@dcloudio/uni-app'
 import { getNavBarHeight } from "@/utils/system.js";
 import favoritesManager from '@/common/style/favorites.js'; // 导入收藏管理器
 
-
 // 用户信息
 const userInfo = ref({
     _id: '', // 添加 _id 字段
     nickname: '咸虾米',
     avatar: '/static/logo.png'
 })
+
+// 我的评论数量
+const myCommentsCount = ref(0)
+
+// 跳转到我的评论页面
+const goToMyComments = () => {
+    if (!userInfo.value._id) {
+        console.log('用户ID为空，无法跳转')
+        uni.showToast({
+            title: '请先登录',
+            icon: 'none'
+        })
+        return
+    }
+    
+    console.log('跳转到我的评论页面，用户ID:', userInfo.value._id)
+    
+    uni.navigateTo({
+        url: `/pages/self/item?userId=${userInfo.value._id}`,
+        success: () => {
+            console.log('跳转到我的评论页面成功')
+        },
+        fail: (error) => {
+            console.error('跳转失败:', error)
+            uni.showToast({
+                title: '跳转失败',
+                icon: 'none'
+            })
+        }
+    })
+}
+
+// 获取我的评论数量（用户文章数）
+const getMyCommentsCount = async () => {
+  try {
+    if (!userInfo.value._id) {
+      console.log('用户ID为空，无法获取评论数量')
+      myCommentsCount.value = 0
+      return
+    }
+    
+    console.log('开始获取我的评论数量，用户ID:', userInfo.value._id)
+    
+    // 使用专门的方法获取用户文章数量
+    const articlesCloudObj = uniCloud.importObject('articlesCloudObj')
+    const res = await articlesCloudObj.getUserArticlesCount({
+      userId: userInfo.value._id
+    })
+    
+    if (res.errCode === 0) {
+      myCommentsCount.value = res.data || 0
+      console.log('我的评论数量:', myCommentsCount.value)
+    } else {
+      console.error('获取评论数量失败:', res.errMsg)
+      myCommentsCount.value = 0
+    }
+  } catch (error) {
+    console.error('获取评论数量失败:', error)
+    myCommentsCount.value = 0
+  }
+}
+
 
 // 监听编辑页面返回的数据
 const setupEventListeners = () => {
@@ -199,15 +259,15 @@ const favoritesCount = ref(0)
 
 // 获取收藏数量
 async function getFavoritesCount() {
-  try {
-    console.log('开始获取收藏数量...')
-    const favorites = await favoritesManager.getFavoritesList(1, 100); // 获取更多来计数
-    favoritesCount.value = favorites.length;
-    console.log('收藏数量:', favoritesCount.value);
-  } catch (error) {
-    console.error('获取收藏数量失败:', error);
-    favoritesCount.value = 0;
-  }
+    try {
+        console.log('开始获取收藏数量...')
+        const favorites = await favoritesManager.getFavoritesList(1, 100); // 获取更多来计数
+        favoritesCount.value = favorites.length;
+        console.log('收藏数量:', favoritesCount.value);
+    } catch (error) {
+        console.error('获取收藏数量失败:', error);
+        favoritesCount.value = 0;
+    }
 }
 
 // 编辑资料点击处理
@@ -294,6 +354,9 @@ async function getUserInfo() {
                     uni.setStorageSync('uni-id-pages-userInfo', updatedStorage)
                     
                     console.log('从云函数同步用户信息成功:', userInfo.value)
+                    
+                    // 获取评论数量
+                    getMyCommentsCount()
                     return
                 }
             } catch (cloudError) {
@@ -326,6 +389,9 @@ async function getUserInfo() {
                 avatar: avatarUrl
             }
             console.log('从本地存储获取用户信息成功:', userInfo.value)
+            
+            // 获取评论数量
+            getMyCommentsCount()
             return
         }
         
@@ -363,6 +429,9 @@ async function getUserInfo() {
                 avatar: avatarUrl
             }
             console.log('从数据库获取用户信息成功:', userInfo.value)
+            
+            // 获取评论数量
+            getMyCommentsCount()
         } else {
             // 保持默认值
             userInfo.value = {

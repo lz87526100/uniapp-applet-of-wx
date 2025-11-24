@@ -1,189 +1,233 @@
-/**
- * 这里是uni-app内置的常用样式变量
- *
- * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
- * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
- *
- */
-/**
- * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
- *
- * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
- */
-/* 颜色变量 */
-/* 行为相关颜色 */
-/* 文字基本颜色 */
-/* 背景颜色 */
-/* 边框颜色 */
-/* 尺寸变量 */
-/* 文字尺寸 */
-/* 图片尺寸 */
-/* Border Radius */
-/* 水平间距 */
-/* 垂直间距 */
-/* 透明度 */
-/* 文章场景相关 */
+
 .container.data-v-a731a6a2 {
-  position: relative;
   height: 100vh;
-  width: 100vw;
-}
-.nav-container.data-v-a731a6a2 {
-  position: absolute;
-  top: 40rpx;
-  left: 40rpx;
-  right: 40rpx;
-  z-index: 10;
-  background-color: white;
-  border-radius: 20rpx;
-  padding: 30rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
-}
-.input-group.data-v-a731a6a2 {
-  margin-bottom: 30rpx;
-}
-.input-item.data-v-a731a6a2 {
   display: flex;
-  align-items: center;
-  margin-bottom: 20rpx;
-  position: relative;
+  flex-direction: column;
+  background: #f5f5f5;
 }
-.label.data-v-a731a6a2 {
-  width: 80rpx;
-  font-size: 28rpx;
-  color: #333;
-  font-weight: bold;
-}
-.input.data-v-a731a6a2 {
-  flex: 1;
-  height: 70rpx;
-  padding: 0 30rpx;
-  font-size: 28rpx;
-  border: 1rpx solid #ddd;
-  border-radius: 10rpx;
-  margin: 0 20rpx;
-}
-.placeholder.data-v-a731a6a2 {
-  color: #999;
-  font-size: 28rpx;
-}
-.clear-btn.data-v-a731a6a2 {
-  background-color: transparent;
-  color: #999;
-  border: none;
-  padding: 10rpx;
-  font-size: 24rpx;
-  width: auto;
-  line-height: 1;
-}
-.button-group.data-v-a731a6a2 {
-  display: flex;
-  justify-content: space-between;
-}
-.location-btn.data-v-a731a6a2, .nav-btn.data-v-a731a6a2 {
-  flex: 1;
-  height: 80rpx;
-  border: none;
-  border-radius: 10rpx;
-  font-size: 30rpx;
-}
-.location-btn.data-v-a731a6a2 {
-  background-color: #f0f0f0;
-  color: #333;
-  margin-right: 20rpx;
-}
-.nav-btn.data-v-a731a6a2 {
-  background-color: #007AFF;
-  color: white;
-}
-.nav-btn.data-v-a731a6a2:disabled {
-  background-color: #cccccc;
-  color: #666666;
-}
-.btn-text.data-v-a731a6a2 {
-  line-height: 80rpx;
-}
-.map.data-v-a731a6a2 {
-  height: 100%;
+.map-container.data-v-a731a6a2 {
   width: 100%;
+  height: 400rpx;
+  flex-shrink: 0;
 }
 
-/* 权限请求弹窗样式 */
-.modal-mask.data-v-a731a6a2 {
+/* H5地图容器特殊样式 */
+.header.data-v-a731a6a2 {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 88rpx;
+  background: linear-gradient(135deg, #1E90FF, #00BFFF);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+
+  padding-top: env(safe-area-inset-top);
+}
+.back-btn.data-v-a731a6a2 {
+  position: absolute;
+  left: 30rpx;
+  font-size: 36rpx;
+}
+.title.data-v-a731a6a2 {
+  font-size: 32rpx;
+  font-weight: 600;
+}
+.location-info.data-v-a731a6a2 {
+  padding: 30rpx;
+  background: white;
+}
+.location-item.data-v-a731a6a2 {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30rpx;
+  padding: 24rpx;
+  background: #f8f9fa;
+  border-radius: 16rpx;
+  border: 1rpx solid #e9ecef;
+}
+.location-item.data-v-a731a6a2:last-child {
+  margin-bottom: 0;
+}
+.location-icon.data-v-a731a6a2 {
+  width: 56rpx;
+  height: 56rpx;
+  margin-right: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 24rpx;
+  font-weight: bold;
+}
+.start-icon.data-v-a731a6a2 {
+  background: #1E90FF;
+  color: white;
+}
+.end-icon.data-v-a731a6a2 {
+  background: #FF4500;
+  color: white;
+}
+.location-input.data-v-a731a6a2 {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 32rpx;
+  outline: none;
+}
+.locate-btn.data-v-a731a6a2, .clear-btn.data-v-a731a6a2 {
+  font-size: 36rpx;
+  padding: 8rpx;
+  margin-left: 16rpx;
+  opacity: 0.7;
+}
+.route-type-selector.data-v-a731a6a2 {
+  display: flex;
+  padding: 0 30rpx;
+  gap: 16rpx;
+  margin-bottom: 30rpx;
+}
+.route-type-btn.data-v-a731a6a2 {
+  flex: 1;
+  padding: 24rpx;
+  border: 1rpx solid #ddd;
+  border-radius: 16rpx;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+}
+.route-type-btn.active.data-v-a731a6a2 {
+  background: #1E90FF;
+  color: white;
+  border-color: #1E90FF;
+}
+.btn-icon.data-v-a731a6a2 {
+  font-size: 36rpx;
+}
+.btn-text.data-v-a731a6a2 {
+  font-size: 24rpx;
+}
+.nav-buttons.data-v-a731a6a2 {
+  display: flex;
+  padding: 0 30rpx 30rpx;
+  gap: 20rpx;
+}
+.nav-btn.data-v-a731a6a2 {
+  flex: 1;
+  padding: 28rpx;
+  border: none;
+  border-radius: 16rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+}
+.nav-btn[disabled].data-v-a731a6a2 {
+  background: #ccc !important;
+  color: #666 !important;
+}
+.primary-btn.data-v-a731a6a2 {
+  background: #1E90FF;
+  color: white;
+}
+.secondary-btn.data-v-a731a6a2 {
+  background: #f8f9fa;
+  color: #333;
+  border: 1rpx solid #dee2e6;
+}
+.route-info.data-v-a731a6a2 {
+  flex: 1;
+  margin: 20rpx;
+  background: white;
+  border-radius: 16rpx;
+  border: 1rpx solid #e9ecef;
+  overflow: hidden;
+}
+.route-header.data-v-a731a6a2 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #e9ecef;
+}
+.route-title.data-v-a731a6a2 {
+  font-size: 32rpx;
+  font-weight: 600;
+}
+.route-summary.data-v-a731a6a2 {
+  color: #1E90FF;
+  font-weight: 600;
+  font-size: 28rpx;
+}
+.route-steps.data-v-a731a6a2 {
+  height: 400rpx;
+}
+.route-step.data-v-a731a6a2 {
+  display: flex;
+  align-items: flex-start;
+  padding: 20rpx 30rpx;
+  border-bottom: 1rpx solid #f8f9fa;
+}
+.route-step.data-v-a731a6a2:last-child {
+  border-bottom: none;
+}
+.step-icon.data-v-a731a6a2 {
+  width: 48rpx;
+  height: 48rpx;
+  margin-right: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+}
+.step-content.data-v-a731a6a2 {
+  flex: 1;
+}
+.step-instruction.data-v-a731a6a2 {
+  display: block;
+  margin-bottom: 8rpx;
+  line-height: 1.4;
+  font-size: 28rpx;
+}
+.step-distance.data-v-a731a6a2 {
+  font-size: 24rpx;
+  color: #666;
+}
+.loading-mask.data-v-a731a6a2 {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
-  justify-content: center;
   align-items: center;
-  z-index: 100;
+  justify-content: center;
+  z-index: 9999;
 }
-.modal-content.data-v-a731a6a2 {
-  background-color: white;
-  width: 600rpx;
-  border-radius: 20rpx;
+.loading.data-v-a731a6a2 {
+  background: white;
   padding: 40rpx;
+  border-radius: 16rpx;
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 20rpx;
 }
-.modal-title.data-v-a731a6a2 {
-  font-size: 36rpx;
-  font-weight: bold;
-  margin-bottom: 20rpx;
-  color: #333;
+.loading-spinner.data-v-a731a6a2 {
+  width: 48rpx;
+  height: 48rpx;
+  border: 4rpx solid #1E90FF;
+  border-top: 4rpx solid transparent;
+  border-radius: 50%;
+  animation: spin-a731a6a2 1s linear infinite;
 }
-.modal-desc.data-v-a731a6a2 {
-  font-size: 28rpx;
-  color: #666;
-  text-align: center;
-  margin-bottom: 40rpx;
-  line-height: 1.5;
+@keyframes spin-a731a6a2 {
+0% { transform: rotate(0deg);
 }
-.modal-buttons.data-v-a731a6a2 {
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
+100% { transform: rotate(360deg);
 }
-.modal-btn.data-v-a731a6a2 {
-  flex: 1;
-  height: 80rpx;
-  border: none;
-  border-radius: 10rpx;
-  font-size: 30rpx;
-  margin: 0 10rpx;
-}
-.modal-btn.confirm.data-v-a731a6a2 {
-  background-color: #007AFF;
-  color: white;
-}
-.modal-btn.cancel.data-v-a731a6a2 {
-  background-color: #f0f0f0;
-  color: #333;
-}
-.tip-message.data-v-a731a6a2 {
-  position: absolute;
-  top: 300rpx;
-  left: 50rpx;
-  right: 50rpx;
-  padding: 20rpx 30rpx;
-  border-radius: 10rpx;
-  text-align: center;
-  z-index: 10;
-  font-size: 28rpx;
-}
-.tip-message.info.data-v-a731a6a2 {
-  background-color: rgba(0, 122, 255, 0.9);
-  color: white;
-}
-.tip-message.success.data-v-a731a6a2 {
-  background-color: rgba(52, 199, 89, 0.9);
-  color: white;
-}
-.tip-message.error.data-v-a731a6a2 {
-  background-color: rgba(255, 59, 48, 0.9);
-  color: white;
 }

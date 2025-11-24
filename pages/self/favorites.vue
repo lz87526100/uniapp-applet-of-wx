@@ -120,6 +120,19 @@ const finished = ref(false);
 const scrollTop = ref(0);
 const canRefresh = ref(true); // 新增：控制是否允许刷新
 
+// 跳转到详情页
+function goToDetail(item) {
+  if (!item || !item.article_id) {
+    uni.showToast({ title: '文章信息错误', icon: 'none' });
+    return;
+  }
+  
+  // 根据你的实际路由配置调整
+  uni.navigateTo({
+    url: `/pages/blog/detail?id=${item.article_id}`
+  });
+}
+
 // 虚拟滚动相关
 const itemHeight = 320;
 const bufferSize = 5;

@@ -1,523 +1,830 @@
 <template>
   <view class="container">
-    <!-- 导航输入区域 -->
-    <view class="nav-container">
-      <view class="input-group">
-        <view class="input-item">
-          <text class="label">起点</text>
-          <input 
-            v-model="startPoint.name" 
-            class="input" 
-            placeholder="请输入起点位置" 
-            placeholder-class="placeholder"
-          />
-          <button v-if="startPoint.name" @tap="clearStart" class="clear-btn">清除</button>
-        </view>
-        
-        <view class="input-item">
-          <text class="label">终点</text>
-          <input 
-            v-model="endPoint.name" 
-            class="input" 
-            placeholder="请输入终点位置" 
-            placeholder-class="placeholder"
-            @confirm="openRoutePlan"
-          />
-          <button v-if="endPoint.name" @tap="clearEnd" class="clear-btn">清除</button>
-        </view>
-      </view>
-      
-      <view class="button-group">
-        <button @tap="requestLocationPermission" class="location-btn">
-          <text class="btn-text">使用当前位置</text>
-        </button>
-        
-        <button @tap="openRoutePlan" class="nav-btn" :disabled="!endPoint.name">
-          <text class="btn-text">开始导航</text>
-        </button>
-      </view>
-    </view>
-    
-    <!-- 地图容器 -->
+    <!-- 地图组件 - 使用条件编译 -->
+    <!-- #ifdef MP-WEIXIN -->
     <map 
-      class="map" 
-      :latitude="currentLocation.lat" 
-      :longitude="currentLocation.lng"
+      id="map"
+      :latitude="latitude"
+      :longitude="longitude"
       :scale="scale"
       :markers="markers"
-      show-location
-      show-compass
+      :polyline="polyline"
+      :show-location="true"
+      class="map-container"
     ></map>
+    <!-- #endif -->
     
-    <!-- 权限请求弹窗 -->
-    <view v-if="showPermissionModal" class="modal-mask">
-      <view class="modal-content">
-        <text class="modal-title">位置权限请求</text>
-        <text class="modal-desc">需要获取您的位置信息才能提供导航服务，请在设置中允许位置权限</text>
-        <view class="modal-buttons">
-          <button @tap="openSetting" class="modal-btn confirm">去设置</button>
-          <button @tap="closePermissionModal" class="modal-btn cancel">取消</button>
-        </view>
+    <!-- #ifdef H5 -->
+    <view class="map-container" id="map"></view>
+    <!-- #endif -->
+    
+    <!-- 顶部标题栏 -->
+    <view class="header">
+      <view class="back-btn" @click="goBack">←</view>
+      <text class="title">地图导航</text>
+    </view>
+    
+    <!-- 位置输入区域 -->
+    <view class="location-info">
+      <view class="location-item">
+        <view class="location-icon start-icon">A</view>
+        <input 
+          type="text" 
+          class="location-input" 
+          v-model="startPoint" 
+          placeholder="请输入起点位置"
+          @focus="onStartFocus"
+        />
+        <view class="locate-btn" @click="useCurrentLocation">📍</view>
+      </view>
+      <view class="location-item">
+        <view class="location-icon end-icon">B</view>
+        <input 
+          type="text" 
+          class="location-input" 
+          v-model="endPoint" 
+          placeholder="请输入终点位置"
+          @focus="onEndFocus"
+        />
+        <view class="clear-btn" @click="clearEndPoint">×</view>
       </view>
     </view>
     
-    <!-- 提示信息 -->
-    <view v-if="tipMessage" class="tip-message" :class="tipType">
-      <text>{{ tipMessage }}</text>
+    <!-- 路线类型选择 -->
+    <view class="route-type-selector">
+      <view 
+        class="route-type-btn" 
+        :class="{ active: routeType === 'drive' }"
+        @click="setRouteType('drive')"
+      >
+        <text class="btn-icon">🚗</text>
+        <text class="btn-text">驾车</text>
+      </view>
+      <view 
+        class="route-type-btn" 
+        :class="{ active: routeType === 'bus' }"
+        @click="setRouteType('bus')"
+      >
+        <text class="btn-icon">🚌</text>
+        <text class="btn-text">公交</text>
+      </view>
+      <view 
+        class="route-type-btn" 
+        :class="{ active: routeType === 'walk' }"
+        @click="setRouteType('walk')"
+      >
+        <text class="btn-icon">🚶</text>
+        <text class="btn-text">步行</text>
+      </view>
+    </view>
+    
+    <!-- 导航按钮 -->
+    <view class="nav-buttons">
+      <button class="nav-btn primary-btn" @click="openExternalNavigation" :disabled="!canNavigate">
+        <text>打开导航</text>
+      </button>
+      <button class="nav-btn secondary-btn" @click="planRoute" :disabled="!canNavigate || loading">
+        <text>{{ loading ? '规划中...' : '路线规划' }}</text>
+      </button>
+    </view>
+    
+    <!-- 路线信息 -->
+    <view class="route-info" v-if="currentRoute">
+      <view class="route-header">
+        <text class="route-title">路线详情</text>
+        <text class="route-summary">{{ currentRoute.distance }} · {{ currentRoute.duration }}</text>
+      </view>
+      <scroll-view class="route-steps" scroll-y>
+        <view 
+          class="route-step" 
+          v-for="(step, index) in currentRoute.steps" 
+          :key="index"
+        >
+          <view class="step-icon">{{ step.icon }}</view>
+          <view class="step-content">
+            <text class="step-instruction">{{ step.instruction }}</text>
+            <text class="step-distance">{{ step.distance }}</text>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+    
+    <!-- 加载状态 -->
+    <view class="loading-mask" v-if="loading">
+      <view class="loading">
+        <view class="loading-spinner"></view>
+        <text>正在规划路线...</text>
+      </view>
     </view>
   </view>
 </template>
 
-<script setup>
-import { ref, reactive } from 'vue'
-import { onLoad, onUnload } from '@dcloudio/uni-app'
+<script>
+// 高德地图Web服务Key
+const AMAP_WEB_KEY = 'becc8508eddef29e75d2b60ec9690cdd';
 
-// 响应式数据
-const startPoint = reactive({
-  name: '',
-  latitude: 0,
-  longitude: 0
-})
-
-const endPoint = reactive({
-  name: '',
-  latitude: 0,
-  longitude: 0
-})
-
-const currentLocation = reactive({
-  lat: 39.9042, // 默认北京坐标
-  lng: 116.4074
-})
-
-const scale = ref(15)
-const markers = ref([])
-const tipMessage = ref('')
-const tipType = ref('info') // info, success, error
-const showPermissionModal = ref(false)
-const hasLocationPermission = ref(false)
-
-// 页面加载
-onLoad(() => {
-  // 检查定位权限状态
-  checkLocationPermission()
-})
-
-// 检查定位权限
-const checkLocationPermission = () => {
-  uni.getSetting({
-    success: (res) => {
-      if (res.authSetting['scope.userLocation'] === true) {
-        // 已经有定位权限
-        hasLocationPermission.value = true
-        getCurrentLocation()
-      } else if (res.authSetting['scope.userLocation'] === false) {
-        // 用户之前拒绝了定位权限
-        hasLocationPermission.value = false
-        showTip('定位权限已被拒绝，请手动授权', 'error')
+export default {
+  name: 'UniversalNavigation',
+  data() {
+    return {
+      // 地图相关 - 微信小程序使用
+      latitude: 39.90923,
+      longitude: 116.397428,
+      scale: 13,
+      markers: [],
+      polyline: [],
+      
+      // H5地图实例
+      map: null,
+      
+      // 位置信息
+      startPoint: '我的位置',
+      endPoint: '',
+      routeType: 'drive',
+      
+      // 路线信息
+      currentRoute: null,
+      loading: false,
+      
+      // 当前位置
+      currentLocation: null
+    }
+  },
+  computed: {
+    canNavigate() {
+      return this.startPoint && this.endPoint;
+    }
+  },
+  onLoad() {
+    this.initMap();
+  },
+  methods: {
+    // 初始化地图 - 多平台兼容
+    initMap() {
+      // #ifdef MP-WEIXIN
+      this.getCurrentLocation();
+      // #endif
+      
+      // #ifdef H5
+      this.initH5Map();
+      // #endif
+    },
+    
+    // H5地图初始化
+    initH5Map() {
+      // 动态加载高德地图
+      if (typeof window !== 'undefined' && !window.AMap) {
+        const script = document.createElement('script');
+        script.src = `https://webapi.amap.com/maps?v=1.4.15&key=${AMAP_WEB_KEY}`;
+        script.onload = () => {
+          setTimeout(() => {
+            this.createH5Map();
+          }, 500);
+        };
+        document.head.appendChild(script);
       } else {
-        // 还未询问过权限
-        hasLocationPermission.value = false
+        this.createH5Map();
       }
     },
-    fail: () => {
-      hasLocationPermission.value = false
-    }
-  })
-}
-
-// 请求定位权限
-const requestLocationPermission = () => {
-  if (hasLocationPermission.value) {
-    // 已经有权限，直接获取位置
-    getCurrentLocation()
-    return
-  }
-  
-  // 请求定位权限
-  uni.authorize({
-    scope: 'scope.userLocation',
-    success: () => {
-      // 授权成功
-      hasLocationPermission.value = true
-      getCurrentLocation()
-      showTip('定位权限授权成功', 'success')
-    },
-    fail: (err) => {
-      console.error('授权失败:', err)
-      // 授权失败，显示权限请求弹窗
-      showPermissionModal.value = true
-    }
-  })
-}
-
-// 获取当前位置
-const getCurrentLocation = () => {
-  uni.getLocation({
-    type: 'gcj02',
-    success: (res) => {
-      currentLocation.lat = res.latitude
-      currentLocation.lng = res.longitude
-      
-      // 更新地图标记
-      updateMarkers()
-      
-      showTip('当前位置获取成功', 'success')
-    },
-    fail: (err) => {
-      console.error('获取当前位置失败:', err)
-      showTip('获取当前位置失败，请检查定位权限或GPS', 'error')
-    }
-  })
-}
-
-// 使用当前位置作为起点
-const useCurrentLocation = () => {
-  if (currentLocation.lat && currentLocation.lng) {
-    startPoint.name = '我的位置'
-    startPoint.latitude = currentLocation.lat
-    startPoint.longitude = currentLocation.lng
-    showTip('已设置当前位置为起点', 'success')
-  } else {
-    showTip('无法获取当前位置，请先授权定位权限', 'error')
-  }
-}
-
-// 打开系统设置页面
-const openSetting = () => {
-  uni.openSetting({
-    success: (res) => {
-      if (res.authSetting['scope.userLocation'] === true) {
-        // 用户同意了定位权限
-        hasLocationPermission.value = true
-        getCurrentLocation()
-        showTip('定位权限已开启', 'success')
+    
+    // 创建H5地图
+    createH5Map() {
+      try {
+        this.map = new AMap.Map('map', {
+          zoom: 13,
+          center: [116.397428, 39.90923],
+          viewMode: '2D'
+        });
+        
+        // 获取当前位置
+        this.getCurrentLocation();
+      } catch (error) {
+        console.error('H5地图初始化失败:', error);
       }
-      showPermissionModal.value = false
     },
-    fail: () => {
-      showPermissionModal.value = false
-      showTip('打开设置失败', 'error')
+    
+    // 获取当前位置 - 多平台兼容
+    getCurrentLocation() {
+      uni.getLocation({
+        type: 'gcj02', // 高德坐标系
+        success: (res) => {
+          this.latitude = res.latitude;
+          this.longitude = res.longitude;
+          this.currentLocation = {
+            latitude: res.latitude,
+            longitude: res.longitude
+          };
+          
+          // #ifdef MP-WEIXIN
+          this.addWeixinMarker(res.latitude, res.longitude, '我的位置', 0);
+          // #endif
+          
+          // #ifdef H5
+          if (this.map) {
+            this.map.setCenter([res.longitude, res.latitude]);
+            this.map.setZoom(15);
+            this.addH5Marker(res.longitude, res.latitude, '我的位置');
+          }
+          // #endif
+          
+          // 获取地址名称
+          this.getAddressName(res.longitude, res.latitude);
+        },
+        fail: (err) => {
+          console.warn('获取位置失败:', err);
+          uni.showToast({
+            title: '获取位置失败，请手动输入起点',
+            icon: 'none'
+          });
+        }
+      });
+    },
+    
+    // 微信小程序添加标记
+    addWeixinMarker(lat, lng, title, id) {
+      this.markers.push({
+        id: id,
+        latitude: lat,
+        longitude: lng,
+        title: title,
+        // iconPath: '/static/location.png' // 需要准备图标
+      });
+    },
+    
+    // H5添加标记
+    addH5Marker(lng, lat, title) {
+      if (!this.map) return;
+      
+      try {
+        const marker = new AMap.Marker({
+          position: [lng, lat],
+          title: title
+        });
+        this.map.add(marker);
+      } catch (error) {
+        console.warn('H5添加标记失败:', error);
+      }
+    },
+    
+    // 获取地址名称
+    async getAddressName(lng, lat) {
+      try {
+        const url = `https://restapi.amap.com/v3/geocode/regeo?key=${AMAP_WEB_KEY}&location=${lng},${lat}&output=JSON`;
+        const response = await uni.request({ url });
+        const data = response[1].data;
+        
+        if (data.status === '1' && data.regeocode) {
+          this.startPoint = data.regeocode.formatted_address;
+        }
+      } catch (error) {
+        console.warn('获取地址失败:', error);
+      }
+    },
+    
+    // 使用当前位置
+    useCurrentLocation() {
+      if (this.currentLocation) {
+        this.getAddressName(this.currentLocation.longitude, this.currentLocation.latitude);
+      }
+    },
+    
+    // 清除终点
+    clearEndPoint() {
+      this.endPoint = '';
+    },
+    
+    // 设置路线类型
+    setRouteType(type) {
+      this.routeType = type;
+    },
+    
+    // 输入框焦点事件
+    onStartFocus() {
+      // 可以在这里实现地址搜索
+    },
+    
+    onEndFocus() {
+      // 可以在这里实现地址搜索
+    },
+    
+    // 路线规划 - 多平台通用
+    async planRoute() {
+      if (!this.canNavigate) {
+        uni.showToast({
+          title: '请输入起点和终点',
+          icon: 'none'
+        });
+        return;
+      }
+      
+      this.loading = true;
+      
+      try {
+        const routeData = await this.getRouteData();
+        
+        if (routeData) {
+          this.currentRoute = this.formatRouteData(routeData);
+          this.drawRoute(routeData);
+          uni.showToast({
+            title: '路线规划成功',
+            icon: 'success'
+          });
+        } else {
+          uni.showToast({
+            title: '路线规划失败，请检查地址',
+            icon: 'none'
+          });
+        }
+      } catch (error) {
+        console.error('路线规划错误:', error);
+        uni.showToast({
+          title: '路线规划失败',
+          icon: 'none'
+        });
+      } finally {
+        this.loading = false;
+      }
+    },
+    
+    // 获取路线数据
+    async getRouteData() {
+      const strategy = this.getRouteStrategy();
+      const url = `https://restapi.amap.com/v3/direction/driving?key=${AMAP_WEB_KEY}&origin=${encodeURIComponent(this.startPoint)}&destination=${encodeURIComponent(this.endPoint)}&strategy=${strategy}&output=JSON`;
+      
+      try {
+        const response = await uni.request({ url });
+        const data = response[1].data;
+        
+        if (data.status === '1' && data.route && data.route.paths && data.route.paths.length > 0) {
+          return data.route.paths[0];
+        }
+        return null;
+      } catch (error) {
+        console.error('获取路线数据失败:', error);
+        return null;
+      }
+    },
+    
+    // 获取路线策略
+    getRouteStrategy() {
+      switch (this.routeType) {
+        case 'drive': return '0'; // 最快路线
+        case 'bus': return '6';   // 公交策略
+        case 'walk': return '2';  // 步行策略
+        default: return '0';
+      }
+    },
+    
+    // 格式化路线数据
+    formatRouteData(route) {
+      const steps = (route.steps || []).map(step => ({
+        instruction: step.instruction.replace(/<[^>]*>/g, ''),
+        distance: (step.distance / 1000).toFixed(1) + '公里',
+        icon: this.getStepIcon(step.instruction)
+      }));
+      
+      return {
+        distance: (route.distance / 1000).toFixed(1) + '公里',
+        duration: this.formatDuration(route.duration),
+        steps: steps
+      };
+    },
+    
+    // 获取步骤图标
+    getStepIcon(instruction) {
+      const inst = instruction.toLowerCase();
+      if (inst.includes('左转')) return '↰';
+      if (inst.includes('右转')) return '↱';
+      if (inst.includes('直行')) return '↑';
+      if (inst.includes('到达')) return '🏁';
+      if (inst.includes('出发')) return '🚩';
+      return '•';
+    },
+    
+    // 格式化时长
+    formatDuration(seconds) {
+      const hours = Math.floor(seconds / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      
+      if (hours > 0) {
+        return `${hours}小时${minutes}分钟`;
+      } else {
+        return `${minutes}分钟`;
+      }
+    },
+    
+    // 绘制路线 - 多平台兼容
+    drawRoute(route) {
+      if (!route.steps) return;
+      
+      // #ifdef MP-WEIXIN
+      this.drawWeixinRoute(route);
+      // #endif
+      
+      // #ifdef H5
+      this.drawH5Route(route);
+      // #endif
+    },
+    
+    // 微信小程序绘制路线
+    drawWeixinRoute(route) {
+      // 清除之前的标记和路线
+      this.markers = [];
+      this.polyline = [];
+      
+      // 添加起点终点标记
+      if (route.steps[0]) {
+        const startLoc = route.steps[0].start_location.split(',');
+        this.addWeixinMarker(parseFloat(startLoc[1]), parseFloat(startLoc[0]), '起点', 1);
+      }
+      
+      if (route.steps[route.steps.length - 1]) {
+        const endLoc = route.steps[route.steps.length - 1].end_location.split(',');
+        this.addWeixinMarker(parseFloat(endLoc[1]), parseFloat(endLoc[0]), '终点', 2);
+      }
+      
+      // 绘制路线
+      const points = [];
+      route.steps.forEach(step => {
+        if (step.polyline) {
+          const stepPoints = step.polyline.split(';');
+          stepPoints.forEach(point => {
+            const [lng, lat] = point.split(',');
+            points.push({
+              latitude: parseFloat(lat),
+              longitude: parseFloat(lng)
+            });
+          });
+        }
+      });
+      
+      if (points.length > 0) {
+        this.polyline = [{
+          points: points,
+          color: '#1E90FF',
+          width: 6,
+          dottedLine: false
+        }];
+      }
+    },
+    
+    // H5绘制路线
+    drawH5Route(route) {
+      if (!this.map || !route.steps) return;
+      
+      try {
+        // 清除之前的路线
+        this.map.clearMap();
+        
+        // 添加起点终点标记
+        if (route.steps[0]) {
+          const startLoc = route.steps[0].start_location.split(',');
+          this.addH5Marker(parseFloat(startLoc[0]), parseFloat(startLoc[1]), '起点');
+        }
+        
+        if (route.steps[route.steps.length - 1]) {
+          const endLoc = route.steps[route.steps.length - 1].end_location.split(',');
+          this.addH5Marker(parseFloat(endLoc[0]), parseFloat(endLoc[1]), '终点');
+        }
+        
+        // 绘制路线
+        const path = [];
+        route.steps.forEach(step => {
+          if (step.polyline) {
+            const points = step.polyline.split(';');
+            points.forEach(point => {
+              const [lng, lat] = point.split(',');
+              path.push([parseFloat(lng), parseFloat(lat)]);
+            });
+          }
+        });
+        
+        if (path.length > 0) {
+          const polyline = new AMap.Polyline({
+            path: path,
+            strokeColor: '#1E90FF',
+            strokeWeight: 6,
+            strokeOpacity: 0.8
+          });
+          this.map.add(polyline);
+          this.map.setFitView();
+        }
+      } catch (error) {
+        console.warn('H5绘制路线失败:', error);
+      }
+    },
+    
+    // 打开外部导航
+    openExternalNavigation() {
+      if (!this.canNavigate) {
+        uni.showToast({
+          title: '请输入起点和终点',
+          icon: 'none'
+        });
+        return;
+      }
+      
+      // 使用高德地图URI方案
+      const url = `https://uri.amap.com/navigation?from=${encodeURIComponent(this.startPoint)}&to=${encodeURIComponent(this.endPoint)}&mode=car&callnative=1`;
+      
+      // #ifdef MP-WEIXIN
+      // 微信小程序中复制链接到剪贴板
+      uni.setClipboardData({
+        data: url,
+        success: () => {
+          uni.showToast({
+            title: '导航链接已复制，请粘贴到浏览器打开',
+            icon: 'success'
+          });
+        }
+      });
+      // #endif
+      
+      // #ifdef H5
+      window.open(url, '_blank');
+      // #endif
+    },
+    
+    // 返回
+    goBack() {
+      uni.navigateBack();
     }
-  })
-}
-
-// 关闭权限请求弹窗
-const closePermissionModal = () => {
-  showPermissionModal.value = false
-}
-
-// 打开路线规划插件
-const openRoutePlan = () => {
-  if (!endPoint.name.trim()) {
-    showTip('请输入终点位置', 'error')
-    return
   }
-  
-  // 使用在腾讯位置服务申请的key
-  const key = '77NBZ-KM2C7-RY2XI-HOQPY-RJXTT-FKB4V';
-  // 调用插件的app的名称
-  const referer = 'demo1009';
-  // 是否开启导航功能
-  const navigation = 1;
-  
-  // 终点
-  const endPointData = JSON.stringify({
-    name: endPoint.name,
-    latitude: endPoint.latitude || currentLocation.lat, // 如果没有具体坐标，使用当前位置
-    longitude: endPoint.longitude || currentLocation.lng,
-  });
-  
-  let url = `plugin://routePlan/index?key=${key}&referer=${referer}&endPoint=${endPointData}&navigation=${navigation}`;
-  
-  // 如果有起点，也传入起点
-  if (startPoint.name && startPoint.latitude && startPoint.longitude) {
-    const startPointData = JSON.stringify({
-      name: startPoint.name,
-      latitude: startPoint.latitude,
-      longitude: startPoint.longitude,
-    });
-    url += `&startPoint=${startPointData}`;
-  }
-  
-  console.log('打开路线规划:', url);
-  
-  uni.navigateTo({
-    url: url,
-    fail: (err) => {
-      console.error('打开路线规划失败:', err)
-      showTip('打开导航失败，请检查插件配置', 'error')
-    }
-  });
 }
-
-// 更新地图标记
-const updateMarkers = () => {
-  const newMarkers = []
-  
-  // 添加起点标记
-  if (startPoint.latitude && startPoint.longitude) {
-    newMarkers.push({
-      id: 1,
-      latitude: startPoint.latitude,
-      longitude: startPoint.longitude,
-      title: startPoint.name,
-      iconPath: '/static/start.png', // 起点图标
-      width: 25,
-      height: 25
-    })
-  }
-  
-  // 添加终点标记
-  if (endPoint.latitude && endPoint.longitude) {
-    newMarkers.push({
-      id: 2,
-      latitude: endPoint.latitude,
-      longitude: endPoint.longitude,
-      title: endPoint.name,
-      iconPath: '/static/end.png', // 终点图标
-      width: 25,
-      height: 25
-    })
-  }
-  
-  // 如果没有起点和终点，添加当前位置标记
-  if (newMarkers.length === 0) {
-    newMarkers.push({
-      id: 0,
-      latitude: currentLocation.lat,
-      longitude: currentLocation.lng,
-      title: '当前位置',
-      iconPath: '/static/location.png',
-      width: 30,
-      height: 30
-    })
-  }
-  
-  markers.value = newMarkers
-}
-
-// 清除起点
-const clearStart = () => {
-  startPoint.name = ''
-  startPoint.latitude = 0
-  startPoint.longitude = 0
-  updateMarkers()
-}
-
-// 清除终点
-const clearEnd = () => {
-  endPoint.name = ''
-  endPoint.latitude = 0
-  endPoint.longitude = 0
-  updateMarkers()
-}
-
-// 显示提示信息
-const showTip = (message, type = 'info') => {
-  tipMessage.value = message
-  tipType.value = type
-  
-  // 3秒后自动隐藏
-  setTimeout(() => {
-    tipMessage.value = ''
-  }, 3000)
-}
-
-// 页面卸载
-onUnload(() => {
-  // 清理工作
-})
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .container {
-  position: relative;
   height: 100vh;
-  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  background: #f5f5f5;
 }
 
-.nav-container {
-  position: absolute;
-  top: 40rpx;
-  left: 40rpx;
-  right: 40rpx;
-  z-index: 10;
-  background-color: white;
-  border-radius: 20rpx;
-  padding: 30rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
+.map-container {
+  width: 100%;
+  height: 400rpx;
+  flex-shrink: 0;
 }
 
-.input-group {
-  margin-bottom: 30rpx;
+/* H5地图容器特殊样式 */
+/* #ifdef H5 */
+.map-container {
+  background: #e0e0e0;
 }
+/* #endif */
 
-.input-item {
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 88rpx;
+  background: linear-gradient(135deg, #1E90FF, #00BFFF);
+  color: white;
   display: flex;
   align-items: center;
-  margin-bottom: 20rpx;
-  position: relative;
+  justify-content: center;
+  z-index: 1000;
+  /* #ifdef MP-WEIXIN */
+  padding-top: env(safe-area-inset-top);
+  /* #endif */
 }
 
-.label {
-  width: 80rpx;
-  font-size: 28rpx;
-  color: #333;
+.back-btn {
+  position: absolute;
+  left: 30rpx;
+  font-size: 36rpx;
+}
+
+.title {
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+.location-info {
+  padding: 30rpx;
+  background: white;
+}
+
+.location-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30rpx;
+  padding: 24rpx;
+  background: #f8f9fa;
+  border-radius: 16rpx;
+  border: 1rpx solid #e9ecef;
+}
+
+.location-item:last-child {
+  margin-bottom: 0;
+}
+
+.location-icon {
+  width: 56rpx;
+  height: 56rpx;
+  margin-right: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 24rpx;
   font-weight: bold;
 }
 
-.input {
-  flex: 1;
-  height: 70rpx;
-  padding: 0 30rpx;
-  font-size: 28rpx;
-  border: 1rpx solid #ddd;
-  border-radius: 10rpx;
-  margin: 0 20rpx;
-}
-
-.placeholder {
-  color: #999;
-  font-size: 28rpx;
-}
-
-.clear-btn {
-  background-color: transparent;
-  color: #999;
-  border: none;
-  padding: 10rpx;
-  font-size: 24rpx;
-  width: auto;
-  line-height: 1;
-}
-
-.button-group {
-  display: flex;
-  justify-content: space-between;
-}
-
-.location-btn, .nav-btn {
-  flex: 1;
-  height: 80rpx;
-  border: none;
-  border-radius: 10rpx;
-  font-size: 30rpx;
-}
-
-.location-btn {
-  background-color: #f0f0f0;
-  color: #333;
-  margin-right: 20rpx;
-}
-
-.nav-btn {
-  background-color: #007AFF;
+.start-icon {
+  background: #1E90FF;
   color: white;
 }
 
-.nav-btn:disabled {
-  background-color: #cccccc;
-  color: #666666;
+.end-icon {
+  background: #FF4500;
+  color: white;
+}
+
+.location-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 32rpx;
+  outline: none;
+}
+
+.locate-btn, .clear-btn {
+  font-size: 36rpx;
+  padding: 8rpx;
+  margin-left: 16rpx;
+  opacity: 0.7;
+}
+
+.route-type-selector {
+  display: flex;
+  padding: 0 30rpx;
+  gap: 16rpx;
+  margin-bottom: 30rpx;
+}
+
+.route-type-btn {
+  flex: 1;
+  padding: 24rpx;
+  border: 1rpx solid #ddd;
+  border-radius: 16rpx;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.route-type-btn.active {
+  background: #1E90FF;
+  color: white;
+  border-color: #1E90FF;
+}
+
+.btn-icon {
+  font-size: 36rpx;
 }
 
 .btn-text {
-  line-height: 80rpx;
+  font-size: 24rpx;
 }
 
-.map {
-  height: 100%;
-  width: 100%;
+.nav-buttons {
+  display: flex;
+  padding: 0 30rpx 30rpx;
+  gap: 20rpx;
 }
 
-/* 权限请求弹窗样式 */
-.modal-mask {
+.nav-btn {
+  flex: 1;
+  padding: 28rpx;
+  border: none;
+  border-radius: 16rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+.nav-btn[disabled] {
+  background: #ccc !important;
+  color: #666 !important;
+}
+
+.primary-btn {
+  background: #1E90FF;
+  color: white;
+}
+
+.secondary-btn {
+  background: #f8f9fa;
+  color: #333;
+  border: 1rpx solid #dee2e6;
+}
+
+.route-info {
+  flex: 1;
+  margin: 20rpx;
+  background: white;
+  border-radius: 16rpx;
+  border: 1rpx solid #e9ecef;
+  overflow: hidden;
+}
+
+.route-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #e9ecef;
+}
+
+.route-title {
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+.route-summary {
+  color: #1E90FF;
+  font-weight: 600;
+  font-size: 28rpx;
+}
+
+.route-steps {
+  height: 400rpx;
+}
+
+.route-step {
+  display: flex;
+  align-items: flex-start;
+  padding: 20rpx 30rpx;
+  border-bottom: 1rpx solid #f8f9fa;
+}
+
+.route-step:last-child {
+  border-bottom: none;
+}
+
+.step-icon {
+  width: 48rpx;
+  height: 48rpx;
+  margin-right: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+}
+
+.step-content {
+  flex: 1;
+}
+
+.step-instruction {
+  display: block;
+  margin-bottom: 8rpx;
+  line-height: 1.4;
+  font-size: 28rpx;
+}
+
+.step-distance {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.loading-mask {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
-  justify-content: center;
   align-items: center;
-  z-index: 100;
+  justify-content: center;
+  z-index: 9999;
 }
 
-.modal-content {
-  background-color: white;
-  width: 600rpx;
-  border-radius: 20rpx;
+.loading {
+  background: white;
   padding: 40rpx;
+  border-radius: 16rpx;
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 20rpx;
 }
 
-.modal-title {
-  font-size: 36rpx;
-  font-weight: bold;
-  margin-bottom: 20rpx;
-  color: #333;
+.loading-spinner {
+  width: 48rpx;
+  height: 48rpx;
+  border: 4rpx solid #1E90FF;
+  border-top: 4rpx solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
 }
 
-.modal-desc {
-  font-size: 28rpx;
-  color: #666;
-  text-align: center;
-  margin-bottom: 40rpx;
-  line-height: 1.5;
-}
-
-.modal-buttons {
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
-}
-
-.modal-btn {
-  flex: 1;
-  height: 80rpx;
-  border: none;
-  border-radius: 10rpx;
-  font-size: 30rpx;
-  margin: 0 10rpx;
-}
-
-.modal-btn.confirm {
-  background-color: #007AFF;
-  color: white;
-}
-
-.modal-btn.cancel {
-  background-color: #f0f0f0;
-  color: #333;
-}
-
-.tip-message {
-  position: absolute;
-  top: 300rpx;
-  left: 50rpx;
-  right: 50rpx;
-  padding: 20rpx 30rpx;
-  border-radius: 10rpx;
-  text-align: center;
-  z-index: 10;
-  font-size: 28rpx;
-}
-
-.tip-message.info {
-  background-color: rgba(0, 122, 255, 0.9);
-  color: white;
-}
-
-.tip-message.success {
-  background-color: rgba(52, 199, 89, 0.9);
-  color: white;
-}
-
-.tip-message.error {
-  background-color: rgba(255, 59, 48, 0.9);
-  color: white;
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 </style>

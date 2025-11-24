@@ -34,49 +34,68 @@
             :key="item._id"
             @touchstart="touchStart"
             @touchend="touchEnd(item._id)"
+            :class="{ 'shop-review': isShopReview(item) }"
           >
-            <view @click="goDetail(item._id)">
-              <!-- 用户信息 -->
-              <view class="userinfo">
+            <!-- 整个卡片内容区域绑定点击事件 -->
+            <view class="card-content" @click="goDetail(item._id,item.shop_id)">
+              <!-- 图片区域 -->
+              <view class="image-area">
                 <image
-                  class="avatar"
-                  :src="getUserAvatar(item.user_id[0])"
+                  v-if="item.pics?.length"
+                  class="content-image"
+                  :src="item.pics[0].url"
                   mode="aspectFill"
-                  @error="handleAvatarError"
-                  @load="onAvatarLoad(item.user_id[0])"
                 />
-                <text class="username">{{ item.user_id[0].nickname || '匿名' }}</text>
-                <text class="time">
-                  <uni-dateformat
-                    :date="item.publish_date"
-                    format="MM-dd hh:mm"
-                    :threshold="[60000,3600000*24*30]"
-                  />
-                </text>
+                <image
+                  v-else
+                  class="content-image"
+                  src="/static/default-movie.jpg"
+                  mode="aspectFill"
+                />
               </view>
-              <!-- 正文 -->
-              <view class="content">
-                <text class="text">{{ item.content }}</text>
-              </view>
-            </view>
-            <!-- 图片 -->
-            <view v-if="item.pics?.length" class="pics">
-              <image
-                v-for="(pic, idx) in item.pics"
-                :key="idx"
-                class="pic"
-                :src="pic.url"
-                mode="aspectFill"
-                @click.stop="preview(item.pics, idx)"
-              />
             </view>
 
-            <!-- 底部工具栏 -->
+            <!-- 底部工具栏 - 用户/商家信息和评论 -->
             <view class="toolbar">
-              <view class="left">
-                <text class="read">{{ item.view_count || 0 }} 浏览</text>
+              <view class="content-area">
+                <!-- 用户/商家信息和评论 -->
+                <view class="user-comment-area">
+                  <!-- 用户头像和名字 -->
+                  <view class="user-info" v-if="!isShopReview(item)">
+                    <image
+                      class="user-avatar"
+                      :src="getUserAvatar(item.user_id[0])"
+                      mode="aspectFill"
+                      @error="handleAvatarError"
+                      @load="onAvatarLoad(item.user_id[0])"
+                    />
+                    <text class="username">{{ item.user_id[0].nickname || '匿名用户' }}</text>
+                  </view>
+                  
+                  <!-- 商家头像和名字 -->
+                  <view class="shop-info" v-else>
+                    <image
+                      class="shop-avatar"
+                      :src="getShopAvatar(item.shop_id)"
+                      mode="aspectFill"
+                      @error="handleShopAvatarError"
+                    />
+                    <text class="shop-name">{{ getShopName(item.shop_id) }}</text>
+                    <!-- 评分显示 -->
+                    <view class="shop-rating" v-if="item.rating">
+                      <text class="rating-star">★</text>
+                      <text class="rating-value">{{ item.rating }}</text>
+                    </view>
+                  </view>
+                  
+                  <!-- 评论内容 -->
+                  <view class="title-area">
+                    <!-- <text class="title">{{ getCommentPreview(item.content) }}</text> -->
+                  </view>
+                </view>
               </view>
-              <view class="right">
+              
+              <view class="right-actions">
                 <!-- 收藏按钮 -->
                 <view class="favorite-btn" @click.stop="toggleFavorite(item._id, item)">
                   <uni-icons 
@@ -144,6 +163,9 @@ const size = 8; // 每次加载8条数据
 const userAvatarCache = ref(new Map());
 const MAX_CACHE_SIZE = 30;
 
+// 商家信息缓存
+const shopInfoCache = ref(new Map());
+
 /* 首次拉取 */
 onMounted(() => {
   console.log('博客列表页面加载');
@@ -151,7 +173,7 @@ onMounted(() => {
   getData(true);
 });
 
-/* 页面触底事件 - 核心修改 */
+/* 页面触底事件 */
 onReachBottom(() => {
   console.log('页面触底，触发加载更多');
   loadMore();
@@ -162,9 +184,15 @@ onPullDownRefresh(() => {
   onRefresh();
 });
 
-const goDetail = (e) => {
+// 修改 goDetail 函数
+const goDetail = (articleId, shopId) => {
+  console.log('跳转到详情页，文章ID:', articleId, '商家ID:', shopId);
+  let url = `/pages/blog/detail?id=${articleId}`;
+  if (shopId) {
+    url += `&shopId=${shopId}`;
+  }
   uni.navigateTo({
-    url: '/pages/blog/detail?id=' + e
+    url: url
   });
 };
 
@@ -304,6 +332,89 @@ const handleAvatarError = (event) => {
   console.log('头像加载失败:', event);
 };
 
+// 判断是否是商家评价
+const isShopReview = (item) => {
+  return item.shop_id && item.rating;
+};
+
+// 获取商家头像
+const getShopAvatar = (shopId) => {
+  if (!shopId) return '/static/default-shop.jpg';
+  
+  const shopInfo = shopInfoCache.value.get(shopId);
+  if (shopInfo && shopInfo.shopPic) {
+    return shopInfo.shopPic;
+  }
+  
+  return '/static/default-shop.jpg';
+};
+
+// 获取商家名称
+const getShopName = (shopId) => {
+  if (!shopId) return '未知商家';
+  
+  const shopInfo = shopInfoCache.value.get(shopId);
+  if (shopInfo && shopInfo.shopName) {
+    return shopInfo.shopName;
+  }
+  
+  return '加载中...';
+};
+
+// 商家头像加载失败处理
+const handleShopAvatarError = (event) => {
+  console.log('商家头像加载失败:', event);
+  event.target.src = '/static/default-shop.jpg';
+};
+
+// 加载商家信息
+const loadShopInfo = async (shopId) => {
+  if (!shopId || shopInfoCache.value.has(shopId)) return;
+  
+  try {
+    console.log('开始加载商家信息，shopId:', shopId);
+    const res = await uniCloud.callFunction({
+      name: 'getShopDetail',
+      data: { shopId }
+    });
+
+    if (res.result?.errCode === 0) {
+      console.log('商家信息加载成功:', res.result.data);
+      shopInfoCache.value.set(shopId, res.result.data);
+      
+      // 强制更新视图
+      articlesList.value = [...articlesList.value];
+    } else {
+      console.error('商家信息加载失败:', res.result?.errMsg);
+    }
+  } catch (error) {
+    console.error('加载商家信息异常:', error);
+  }
+};
+
+// 批量加载商家信息
+const batchLoadShopInfo = async () => {
+  const shopIds = articlesList.value
+    .filter(item => item.shop_id && !shopInfoCache.value.has(item.shop_id))
+    .map(item => item.shop_id);
+  
+  if (shopIds.length === 0) return;
+  
+  console.log('批量加载商家信息，数量:', shopIds.length);
+  
+  // 逐个加载商家信息
+  for (const shopId of shopIds) {
+    await loadShopInfo(shopId);
+  }
+};
+
+// 获取评论预览文本
+const getCommentPreview = (content) => {
+  if (!content) return '暂无评论';
+  // 限制评论显示长度
+  return content.length > 30 ? content.substring(0, 30) + '...' : content;
+};
+
 // 获取数据
 async function getData(reset = true) {
   if (reset) {
@@ -334,6 +445,8 @@ async function getData(reset = true) {
       // 数据加载完成后检查收藏状态
       if (articlesList.value.length > 0) {
         await checkFavoritesStatus();
+        // 新增：加载商家信息
+        await batchLoadShopInfo();
       }
       
     } else {
@@ -392,7 +505,6 @@ async function toggleFavorite(articleId, item) {
   }
 }
 
-
 // 批量检查收藏状态 
 async function checkFavoritesStatus() {
     try {
@@ -434,7 +546,7 @@ function onRefresh() {
   getData(true);
 }
 
-/* 触底加载更多 - 核心修改 */
+/* 触底加载更多 */
 function loadMore() {
   // 防止重复加载
   if (loadingMore.value || finished.value || loading.value) {
@@ -506,7 +618,6 @@ async function refreshToken() {
   }
 };
 
-
 // 在 list 页面中添加调试方法
 async function debugLoginStatus() {
     try {
@@ -522,10 +633,6 @@ async function debugLoginStatus() {
 onMounted(() => {
     debugLoginStatus();
 });
-
-
-
-
 </script>
 
 <style lang="scss" scoped>
@@ -603,85 +710,160 @@ $transition: all .3s cubic-bezier(.4, 0, .2, 1);
 /* -------------------- 卡片 -------------------- */
 .card {
   background: #fff;
-  border-radius: $radius;
-  padding: 32rpx;
-  margin-bottom: 24rpx;
-  box-shadow: $shadow;
-  transition: $transition;
-  &:active { transform: scale(.98); }
+  border-radius: 24rpx;
+  padding: 0;
+  margin: 0 24rpx 24rpx;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, .08);
+  transition: all .3s cubic-bezier(.4, 0, .2, 1);
+  overflow: hidden;
+  
+  &:active { 
+    transform: scale(.98); 
+    box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, .12);
+  }
 
-  .userinfo {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20rpx;
-    .avatar {
-      width: 72rpx;
-      height: 72rpx;
-      border-radius: 50%;
-      border: 4rpx solid #fff;
-      box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, .1);
-      margin-right: 16rpx;
+  /* 商家评价卡片特殊样式 */
+  &.shop-review {
+    // border-left: 6rpx solid #FF6B35;
+  }
+
+  /* 卡片内容区域 - 可点击 */
+  .card-content {
+    /* 图片区域 */
+    .image-area {
+      .content-image {
+        width: 100%;
+        height: 400rpx;
+        background-color: #f5f5f5;
+      }
     }
-    .username {
-      font-size: 30rpx;
-      font-weight: 600;
-      color: $primary;
-    }
-    .time {
-      margin-left: auto;
-      font-size: 24rpx;
-      color: #8B9AB6;
+
+    /* 标题区域 */
+    .title-area {
+      padding: 20rpx 24rpx 16rpx;
+      
+      .title {
+        font-size: 32rpx;
+        font-weight: 700;
+        color: #222;
+        line-height: 1.4;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
     }
   }
 
-  .content {
-    .text {
-      font-size: 34rpx;
-      line-height: 1.8em;
-      color: #222;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-    .pics {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12rpx;
-      margin-top: 20rpx;
-    }
-  }
-  .pic {
-    width: 38%;
-    height: 38%;
-    border-radius: 12rpx;
-    aspect-ratio: 1;
-    overflow: hidden;
-  }
-
+  /* 底部工具栏 - 用户名和评论 */
   .toolbar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-top: 24rpx;
+    padding: 16rpx 24rpx 24rpx;
+    background: #fff;
+    border-top: 1rpx solid #f0f0f0;
     
-    .left {
-      .read {
-        font-size: 24rpx;
-        color: #8B9AB6;
+    .content-area {
+      flex: 1;
+      
+      /* 用户信息和评论区域 */
+      .user-comment-area {
+        display: flex;
+        align-items: center;
+        gap: 16rpx;
+        
+        .user-info {
+          display: flex;
+          align-items: center;
+          gap: 12rpx;
+          min-width: 120rpx;
+          
+          .user-avatar {
+            width: 48rpx;
+            height: 48rpx;
+            border-radius: 50%;
+            border: 2rpx solid #f0f0f0;
+          }
+          
+          .username {
+            font-size: 24rpx;
+            color: #666;
+            font-weight: 500;
+            white-space: nowrap;
+          }
+        }
+        
+        /* 商家信息样式 */
+        .shop-info {
+          display: flex;
+          align-items: center;
+          gap: 12rpx;
+          min-width: 120rpx;
+          
+          .shop-avatar {
+            width: 48rpx;
+            height: 48rpx;
+            border-radius: 12rpx; /* 商家头像用圆角矩形 */
+            border: 2rpx solid #f0f0f0;
+          }
+          
+          .shop-name {
+            font-size: 24rpx;
+            color: #FF6B35; /* 商家名称用特殊颜色 */
+            font-weight: 600;
+            white-space: nowrap;
+          }
+          
+          .shop-rating {
+            display: flex;
+            align-items: center;
+            background: #FFF8E1;
+            padding: 4rpx 8rpx;
+            border-radius: 8rpx;
+            margin-left: 8rpx;
+            
+            .rating-star {
+              color: #FFD700;
+              font-size: 20rpx;
+              margin-right: 2rpx;
+            }
+            
+            .rating-value {
+              font-size: 20rpx;
+              color: #FF6B35;
+              font-weight: 600;
+            }
+          }
+        }
+        
+        .comment-content {
+          flex: 1;
+          
+          .comment-text {
+            font-size: 26rpx;
+            color: #333;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+          }
+        }
       }
     }
     
-    .right {
+    .right-actions {
       display: flex;
       align-items: center;
-      gap: 16rpx;
+      gap: 12rpx;
+      margin-left: 16rpx;
       
       .favorite-btn {
-        width: 56rpx;
-        height: 56rpx;
+        width: 48rpx;
+        height: 48rpx;
         border-radius: 50%;
-        background: #f5f5f5;
+        background: #f8f8f8;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -694,16 +876,18 @@ $transition: all .3s cubic-bezier(.4, 0, .2, 1);
       }
       
       .delete {
-        width: 56rpx;
-        height: 56rpx;
+        width: 48rpx;
+        height: 48rpx;
         border-radius: 50%;
         background: linear-gradient(135deg, #FF5B5B 0%, #FF8A8A 100%);
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 4rpx 12rpx rgba(255, 91, 91, 0.35);
-        transition: $transition;
-        &:active { transform: scale(.9); }
+        transition: all 0.3s ease;
+        
+        &:active { 
+          transform: scale(.9); 
+        }
       }
     }
   }

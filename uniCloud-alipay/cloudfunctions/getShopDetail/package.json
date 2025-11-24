@@ -1,0 +1,7 @@
+{
+  "name": "getShopDetail",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

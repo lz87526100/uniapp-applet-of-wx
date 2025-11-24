@@ -1,6 +1,7 @@
 {
   "navigationBarTitleText": "编辑",
   "usingComponents": {
+    "uni-load-more": "../../uni_modules/uni-load-more/components/uni-load-more/uni-load-more",
     "uni-file-picker": "../../uni_modules/uni-file-picker/components/uni-file-picker/uni-file-picker"
   }
 }

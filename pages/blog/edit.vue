@@ -1,20 +1,42 @@
 <template>
+    <!-- <view class="statusBar" :style="{height:getStatusBarHeight()+'px'}"></view> -->
 	<view class="layout">
-		<!-- 顶部标题栏 -->
-		<!-- <view class="header"> -->
-			<!-- <text class="header-title">发布动态</text> -->
-			<!-- <text class="header-desc">分享你的精彩瞬间</text> -->
-		<!-- </view> -->
-		
+		<!-- 商家信息头部 -->
+		<view class="shop-header" v-if="shopInfo">
+			<view class="shop-bg">
+				<image class="bg-image" :src="shopInfo.shopPic || '/static/default-shop.jpg'" mode="aspectFill" />
+				<view class="bg-overlay"></view>
+			</view>
+			
+			<view class="shop-info">
+				<image class="shop-logo" :src="shopInfo.shopPic || '/static/default-shop.jpg'" mode="aspectFill" />
+				<view class="shop-details">
+					<text class="shop-name">{{ shopInfo.shopName }}</text>
+					<view class="shop-meta">
+						<text class="shop-rating" v-if="shopInfo.rating > 0">
+							<text class="rating-star">★</text>
+							<text class="rating-value">{{ (shopInfo.rating / 10).toFixed(1) }}</text>
+						</text>
+						<text class="shop-address" v-if="shopInfo.address">{{ shopInfo.address }}</text>
+					</view>
+				</view>
+			</view>
+		</view>
+
+		<!-- 加载状态 -->
+		<view v-if="loading" class="loading-state">
+			<uni-load-more status="loading" content="加载商家信息..." />
+		</view>
+
 		<!-- 内容区域 -->
-		<view class="content-card">
+		<view class="content-card" v-if="!loading && shopInfo">
 			<view class="card-header">
-				<text class="card-title">此刻想法</text>
+				<text class="card-title">评价商家</text>
 				<text class="word-count">{{ formData.content.length }}/600</text>
 			</view>
 			<textarea 
 				class="textarea" 
-				placeholder="分享你的想法、经历或感悟..." 
+				:placeholder="`分享你对${shopInfo.shopName}的评价...`" 
 				placeholder-class="placeholder"
 				auto-height 
 				:maxlength="600" 
@@ -24,7 +46,7 @@
 		</view>
 		
 		<!-- 图片上传区域 -->
-		<view class="content-card">
+		<view class="content-card" v-if="!loading && shopInfo">
 			<view class="card-header">
 				<text class="card-title">添加图片</text>
 				<text class="pic-count">{{ formData.pics.length }}/9</text>
@@ -41,36 +63,75 @@
 				/>
 			</view>
 		</view>
+
+		<!-- 评分区域 -->
+		<view class="content-card" v-if="!loading && shopInfo">
+			<view class="card-header">
+				<text class="card-title">评分</text>
+			</view>
+			<view class="rating-section">
+				<view class="stars">
+					<text 
+						v-for="n in 5" 
+						:key="n" 
+						class="star" 
+						:class="{ active: formData.rating >= n }"
+						@click="setRating(n)"
+					>★</text>
+				</view>
+				<text class="rating-text">{{ ratingText }}</text>
+			</view>
+		</view>
 		
 		<!-- 提交按钮 -->
-		<view class="footer">
+		<view class="footer" v-if="!loading && shopInfo">
 			<button 
 				class="submit-btn" 
 				:class="{ 'submit-btn-disabled': btnDisabled }" 
 				:disabled="btnDisabled" 
 				@click="onSubmit"
 			>
-				<text class="btn-text">{{ btnDisabled ? '请填写内容' : '立即发布' }}</text>
+				<text class="btn-text">{{ btnDisabled ? '请填写内容和评分' : '立即发布' }}</text>
 				<text class="btn-icon">➜</text>
 			</button>
 		</view>
 		
 		<!-- 发布提示 -->
-		<view class="tips">
+		<view class="tips" v-if="!loading && shopInfo">
 			<text class="tip-text">• 请遵守社区规范，文明发言</text>
 			<text class="tip-text">• 图片支持 JPG、PNG 格式</text>
+			<text class="tip-text">• 评价内容将公开显示</text>
+		</view>
+
+		<!-- 错误状态 -->
+		<view v-if="error" class="error-state">
+			<view class="error-icon">😔</view>
+			<text class="error-title">加载失败</text>
+			<text class="error-desc">{{ error }}</text>
+			<button class="retry-btn" @click="loadShopInfo(shopId)">重试</button>
 		</view>
 	</view>
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted } from 'vue';
+import { onLoad } from '@dcloudio/uni-app';
+import { getStatusBarHeight, getTitleBarHeight } from "@/utils/system.js"
 
 const articlesCloudObj = uniCloud.importObject("articlesCloudObj");
 
+// 商家信息
+const shopInfo = ref(null);
+const loading = ref(false);
+const error = ref('');
+const shopId = ref('');
+
+// 表单数据
 const formData = ref({
 	content: "",
-	pics: []
+	pics: [],
+	rating: 0,
+	shopId: ""
 });
 
 // 图片样式配置
@@ -85,7 +146,73 @@ const imageStyles = {
 	}
 };
 
-const btnDisabled = computed(() => !(formData.value.content.length > 0 || formData.value.pics.length > 0));
+// 计算属性
+const btnDisabled = computed(() => {
+	return !(formData.value.content.length > 0 && formData.value.rating > 0);
+});
+
+const ratingText = computed(() => {
+	const texts = ['请评分', '很差', '一般', '满意', '很好', '完美'];
+	return texts[formData.value.rating] || texts[0];
+});
+
+// 生命周期
+onLoad((options) => {
+    console.log('页面参数:', options);
+    console.log('接收到的shopId:', options.shopId); // 添加调试
+    
+    if (options.shopId) {
+        shopId.value = options.shopId;
+        formData.value.shopId = options.shopId; // 确保这里正确赋值
+        console.log('设置后的shopId:', shopId.value); // 调试
+        loadShopInfo(options.shopId);
+    } else {
+        error.value = '商家信息不存在';
+        console.error('未接收到shopId参数'); // 添加错误日志
+        uni.showToast({
+            title: '商家信息不存在',
+            icon: 'none'
+        });
+    }
+});
+
+// 方法 - 加载商家信息
+async function loadShopInfo(id) {
+	console.log('开始加载商家信息，ID:', id);
+	loading.value = true;
+	error.value = '';
+
+	try {
+		// 调用云函数获取商家信息
+		const res = await uniCloud.callFunction({
+			name: 'getShopDetail',
+			data: { shopId: id }
+		});
+
+		console.log('商家信息返回:', res);
+
+		if (res.result?.errCode === 0) {
+			shopInfo.value = res.result.data;
+			
+			// 设置页面标题
+			uni.setNavigationBarTitle({
+				title: `评价${shopInfo.value.shopName}`
+			});
+		} else {
+			error.value = res.result?.errMsg || '加载商家信息失败';
+			console.error('加载失败:', error.value);
+		}
+	} catch (e) {
+		console.error('加载商家信息失败:', e);
+		error.value = '网络错误，请重试';
+	} finally {
+		loading.value = false;
+	}
+}
+
+const setRating = (rating) => {
+	formData.value.rating = rating;
+};
 
 const onContentInput = () => {
 	// 内容输入时的额外处理
@@ -95,13 +222,15 @@ const onSubmit = async () => {
 	console.log("提交数据", formData.value);
     
     const params = {
-        ...formData.value,
+        content: formData.value.content,
         pics: formData.value.pics.map(item => ({
 			name: item.name,
 			extname: item.extname,
 			url: item.url
 		})),
-		publish_date: Date.now()
+		publish_date: Date.now(),
+		shop_id: formData.value.shopId, // 商家ID
+		rating: formData.value.rating   // 评分
     };
 	
 	try {
@@ -117,19 +246,24 @@ const onSubmit = async () => {
 		
 		if (result.errCode === 0) {
 			uni.showToast({
-				title: "🎉 发布成功",
+				title: "🎉 评价成功",
 				icon: "success",
 				duration: 1500
 			});
 			
 			setTimeout(() => {
-				uni.$emit("editEvent");
+				// 发送事件通知商家详情页更新评价
+				uni.$emit("reviewAdded", {
+					shopId: formData.value.shopId,
+					rating: formData.value.rating
+				});
 				uni.navigateBack();
 			}, 100);
 			
 			// 清空表单
 			formData.value.content = "";
 			formData.value.pics = [];
+			formData.value.rating = 0;
 		} else {
 			uni.showToast({
 				title: "发布失败：" + (result.errMsg || result.message || "未知错误"),
@@ -164,33 +298,154 @@ const onUploadFail = (err) => {
 		duration: 2000
 	});
 };
-
 </script>
 
 <style lang="scss" scoped>
 .layout {
 	min-height: 100vh;
 	background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-	padding: 30rpx;
 }
 
-
-.header {
-	text-align: center;
-	margin-bottom: 20rpx;
-	padding: 40rpx 0 20rpx 0;
+/* 商家信息头部 */
+.shop-header {
+	position: relative;
+	height: 400rpx;
+	margin-bottom: 30rpx;
+    overflow: hidden;
 	
-	.header-title {
-		display: block;
-		font-size: 48rpx;
-		font-weight: 700;
-		color: #2c3e50;
-		margin-bottom: 12rpx;
+	.shop-bg {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		
+		.bg-image {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
+		
+		.bg-overlay {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.3) 100%);
+		}
 	}
 	
-	.header-desc {
-		font-size: 28rpx;
+	.shop-info {
+		position: absolute;
+		bottom: 40rpx;
+		left: 30rpx;
+		right: 30rpx;
+		display: flex;
+		align-items: flex-end;
+		
+		.shop-logo {
+			width: 120rpx;
+			height: 120rpx;
+			border-radius: 20rpx;
+			border: 4rpx solid white;
+			box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.2);
+			margin-right: 24rpx;
+			flex-shrink: 0;
+		}
+		
+		.shop-details {
+			flex: 1;
+			
+			.shop-name {
+				font-size: 36rpx;
+				font-weight: 700;
+				color: white;
+				display: block;
+				margin-bottom: 12rpx;
+				text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.5);
+			}
+			
+			.shop-meta {
+				display: flex;
+				flex-direction: column;
+				gap: 8rpx;
+				
+				.shop-rating {
+					background: rgba(255, 255, 255, 0.9);
+					padding: 8rpx 16rpx;
+					border-radius: 20rpx;
+					display: inline-flex;
+					align-items: center;
+					align-self: flex-start;
+					
+					.rating-star {
+						color: #FFD700;
+						font-size: 24rpx;
+						margin-right: 4rpx;
+					}
+					
+					.rating-value {
+						font-size: 24rpx;
+						font-weight: 600;
+						color: #333;
+					}
+				}
+				
+				.shop-address {
+					font-size: 24rpx;
+					color: rgba(255, 255, 255, 0.9);
+					background: rgba(255, 255, 255, 0.2);
+					padding: 6rpx 16rpx;
+					border-radius: 16rpx;
+					backdrop-filter: blur(10rpx);
+					align-self: flex-start;
+				}
+			}
+		}
+	}
+}
+
+/* 加载状态 */
+.loading-state {
+	padding: 100rpx 0;
+	text-align: center;
+}
+
+/* 错误状态 */
+.error-state {
+	text-align: center;
+	padding: 200rpx 40rpx;
+	
+	.error-icon {
+		font-size: 120rpx;
+		margin-bottom: 30rpx;
+		opacity: 0.6;
+	}
+	
+	.error-title {
+		font-size: 34rpx;
+		font-weight: 700;
+		color: #2c3e50;
+		margin-bottom: 16rpx;
+		display: block;
+	}
+	
+	.error-desc {
+		font-size: 26rpx;
 		color: #7f8c8d;
+		margin-bottom: 40rpx;
+		display: block;
+		line-height: 1.5;
+	}
+	
+	.retry-btn {
+		background: #667eea;
+		color: white;
+		border: none;
+		border-radius: 50rpx;
+		padding: 20rpx 60rpx;
+		font-size: 28rpx;
 	}
 }
 
@@ -198,7 +453,7 @@ const onUploadFail = (err) => {
 	background: #ffffff;
 	border-radius: 24rpx;
 	padding: 32rpx;
-	margin-bottom: 30rpx;
+	margin: 0 30rpx 30rpx 30rpx;
 	box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.08);
 	
 	.card-header {
@@ -247,12 +502,47 @@ const onUploadFail = (err) => {
 }
 
 .pics {
-    
 	padding: 0;
 }
 
+/* 评分区域 */
+.rating-section {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 20rpx 0;
+	
+	.stars {
+		display: flex;
+		gap: 20rpx;
+		margin-bottom: 20rpx;
+		
+		.star {
+			font-size: 60rpx;
+			color: #e0e0e0;
+			cursor: pointer;
+			transition: all 0.2s ease;
+			
+			&.active {
+				color: #FFD700;
+				transform: scale(1.1);
+			}
+			
+			&:hover {
+				transform: scale(1.2);
+			}
+		}
+	}
+	
+	.rating-text {
+		font-size: 28rpx;
+		color: #7f8c8d;
+		font-weight: 500;
+	}
+}
+
 .footer {
-	padding: 40rpx 0;
+	padding: 40rpx 30rpx;
 	
 	.submit-btn {
 		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -303,7 +593,7 @@ const onUploadFail = (err) => {
 	background: rgba(255, 255, 255, 0.7);
 	border-radius: 16rpx;
 	padding: 24rpx 32rpx;
-	margin-top: 20rpx;
+	margin: 0 30rpx 40rpx 30rpx;
 	
 	.tip-text {
 		display: block;
@@ -316,13 +606,28 @@ const onUploadFail = (err) => {
 
 /* 响应式设计 */
 @media (max-width: 750rpx) {
-	.layout {
-		padding: 20rpx;
+	.shop-header {
+		height: 260rpx;
+		
+		.shop-info {
+			left: 20rpx;
+			right: 20rpx;
+			
+			.shop-logo {
+				width: 100rpx;
+				height: 100rpx;
+			}
+			
+			.shop-name {
+				font-size: 32rpx;
+			}
+		}
 	}
 	
 	.content-card {
 		padding: 24rpx;
 		border-radius: 20rpx;
+		margin: 0 20rpx 20rpx 20rpx;
 	}
 	
 	.textarea {
@@ -357,6 +662,10 @@ const onUploadFail = (err) => {
 	
 	.placeholder {
 		color: #95a5a6;
+	}
+	
+	.tips {
+		background: rgba(44, 62, 80, 0.7);
 	}
 }
 </style>

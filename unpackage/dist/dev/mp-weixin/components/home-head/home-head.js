@@ -31,7 +31,7 @@ const _sfc_main = {
           format: "yyyy年MM月"
         }),
         e: common_vendor.t(weekDay.value),
-        f: common_assets._imports_0$2
+        f: common_assets._imports_0$3
       };
     };
   }

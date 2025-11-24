@@ -6494,9 +6494,9 @@ function populateParameters(fromRes, toRes) {
     appVersion: "1.0.0",
     appVersionCode: "100",
     appLanguage: getAppLanguage(hostLanguage),
-    uniCompileVersion: "4.84",
-    uniCompilerVersion: "4.84",
-    uniRuntimeVersion: "4.84",
+    uniCompileVersion: "4.85",
+    uniCompilerVersion: "4.85",
+    uniRuntimeVersion: "4.85",
     uniPlatform: "mp-weixin",
     deviceBrand,
     deviceModel: model,
@@ -6645,9 +6645,9 @@ const getAppBaseInfo = {
       appLanguage: getAppLanguage(hostLanguage),
       isUniAppX: false,
       uniPlatform: "mp-weixin",
-      uniCompileVersion: "4.84",
-      uniCompilerVersion: "4.84",
-      uniRuntimeVersion: "4.84"
+      uniCompileVersion: "4.85",
+      uniCompilerVersion: "4.85",
+      uniRuntimeVersion: "4.85"
     };
     extend(toRes, parameters);
   }
@@ -7391,9 +7391,9 @@ function isConsoleWritable() {
   return isWritable;
 }
 function initRuntimeSocketService() {
-  const hosts = "172.26.80.1,192.168.1.2,10.1.1.1,127.0.0.1";
+  const hosts = "169.254.221.81,192.168.1.2,169.254.0.93,127.0.0.1";
   const port = "8090";
-  const id = "mp-weixin_E3lPsf";
+  const id = "mp-weixin_PS8p3u";
   const lazy = typeof swan !== "undefined";
   let restoreError = lazy ? () => {
   } : initOnError();
@@ -8448,7 +8448,10 @@ const pages = [
   {
     path: "pages/demo1009/demo1009",
     style: {
-      navigationBarTitleText: ""
+      navigationBarTitleText: "地图导航",
+      "app-plus": {
+        titleNView: false
+      }
     }
   },
   {
@@ -8593,6 +8596,27 @@ const pages = [
     style: {
       navigationBarTitleText: "我的收藏"
     }
+  },
+  {
+    path: "pages/shopList/shopList",
+    style: {
+      navigationStyle: "custom",
+      navigationBarTitleText: ""
+    }
+  },
+  {
+    path: "pages/shopList/shopDetail",
+    style: {
+      navigationStyle: "custom",
+      navigationBarTitleText: ""
+    }
+  },
+  {
+    path: "pages/showMap/showMap",
+    style: {
+      navigationBarTitleText: "商家地址",
+      enablePullDownRefresh: true
+    }
   }
 ];
 const globalStyle = {
@@ -8610,6 +8634,12 @@ const tabBar = {
       pagePath: "pages/blog/list",
       iconPath: "/static/logo/home.png",
       selectedIconPath: "/static/logo/home-h.png"
+    },
+    {
+      text: "商家",
+      pagePath: "pages/shopList/shopList",
+      iconPath: "/static/logo/store.png",
+      selectedIconPath: "/static/logo/store-h.png"
     },
     {
       text: "我的",
@@ -8961,7 +8991,7 @@ class S {
 function T(e2) {
   return e2 && "string" == typeof e2 ? JSON.parse(e2) : e2;
 }
-const b = true, E = "mp-weixin", A = T(define_process_env_UNI_SECURE_NETWORK_CONFIG_default), P = E, C = T('{"address":["127.0.0.1","172.26.80.1","192.168.1.2","10.1.1.1"],"servePort":7000,"debugPort":9000,"initialLaunchType":"remote","skipFiles":["<node_internals>/**","E:/movie/HBuilderX.4.57.2025032507/HBuilderX/plugins/unicloud/**/*.js"]}'), O = T('[{"provider":"alipay","spaceName":"zfb-demo","spaceId":"env-00jxtt1yppya","spaceAppId":"2021005176658369","accessKey":"3czBOclNFKaAdGdL","secretKey":"LbXD2EJnJIXfhuB9"}]') || [];
+const b = true, E = "mp-weixin", A = T(define_process_env_UNI_SECURE_NETWORK_CONFIG_default), P = E, C = T('{"address":["127.0.0.1","169.254.221.81","169.254.0.93","192.168.1.5"],"servePort":7000,"debugPort":9000,"initialLaunchType":"remote","skipFiles":["<node_internals>/**","E:/movie/HBuilderX.4.57.2025032507/HBuilderX/plugins/unicloud/**/*.js"]}'), O = T('[{"provider":"alipay","spaceName":"zfb-demo","spaceId":"env-00jxtt1yppya","spaceAppId":"2021005176658369","accessKey":"3czBOclNFKaAdGdL","secretKey":"LbXD2EJnJIXfhuB9"}]') || [];
 let N = "";
 try {
   N = "__UNI__B858315";
@@ -11484,9 +11514,9 @@ let er = new class {
 })();
 var tr = er;
 var define_process_env_UNI_STATISTICS_CONFIG_default = { enable: true };
-var define_process_env_UNI_STAT_TITLE_JSON_default = { "pages/self/self": "我的", "pages/demo-user/list": "列表", "pages/index/index": "uni-app", "pages/demo-user/add": "新增", "pages/demo-user/edit": "编辑", "pages/demo-user/detail": "详情", "pages/demo0719/list": "列表", "pages/demo0719/detail": "详情", "pages/demo0719/update": "更新", "uni_modules/uni-id-pages/pages/register/register": "注册", "uni_modules/uni-id-pages/pages/login/login-withoutpwd": "登录", "uni_modules/uni-id-pages/pages/login/login-withpwd": "账号密码登录", "uni_modules/uni-id-pages/pages/login/login-smscode": "手机验证码登录", "uni_modules/uni-id-pages/pages/userinfo/userinfo": "个人资料", "uni_modules/uni-id-pages/pages/userinfo/bind-mobile/bind-mobile": "绑定手机号码", "uni_modules/uni-id-pages/pages/register/register-by-email": "邮箱验证码注册", "uni_modules/uni-id-pages/pages/retrieve/retrieve": "重置密码", "uni_modules/uni-id-pages/pages/retrieve/retrieve-by-email": "通过邮箱重置密码", "uni_modules/uni-id-pages/pages/userinfo/change_pwd/change_pwd": "修改密码", "uni_modules/uni-id-pages/pages/register/register-admin": "注册管理员账号", "uni_modules/uni-id-pages/pages/userinfo/set-pwd/set-pwd": "设置密码", "uni_modules/uni-id-pages/pages/userinfo/deactivate/deactivate": "注销账号", "uni_modules/uni-id-pages/pages/userinfo/realname-verify/realname-verify": "实名认证", "pages/articles/list": "文章列表", "pages/blog/edit": "编辑", "pages/self/editSelf": "编辑个人信息", "pages/self/favorites": "我的收藏" };
+var define_process_env_UNI_STAT_TITLE_JSON_default = { "pages/self/self": "我的", "pages/demo-user/list": "列表", "pages/index/index": "uni-app", "pages/demo-user/add": "新增", "pages/demo-user/edit": "编辑", "pages/demo-user/detail": "详情", "pages/demo0719/list": "列表", "pages/demo0719/detail": "详情", "pages/demo0719/update": "更新", "pages/demo1009/demo1009": "地图导航", "uni_modules/uni-id-pages/pages/register/register": "注册", "uni_modules/uni-id-pages/pages/login/login-withoutpwd": "登录", "uni_modules/uni-id-pages/pages/login/login-withpwd": "账号密码登录", "uni_modules/uni-id-pages/pages/login/login-smscode": "手机验证码登录", "uni_modules/uni-id-pages/pages/userinfo/userinfo": "个人资料", "uni_modules/uni-id-pages/pages/userinfo/bind-mobile/bind-mobile": "绑定手机号码", "uni_modules/uni-id-pages/pages/register/register-by-email": "邮箱验证码注册", "uni_modules/uni-id-pages/pages/retrieve/retrieve": "重置密码", "uni_modules/uni-id-pages/pages/retrieve/retrieve-by-email": "通过邮箱重置密码", "uni_modules/uni-id-pages/pages/userinfo/change_pwd/change_pwd": "修改密码", "uni_modules/uni-id-pages/pages/register/register-admin": "注册管理员账号", "uni_modules/uni-id-pages/pages/userinfo/set-pwd/set-pwd": "设置密码", "uni_modules/uni-id-pages/pages/userinfo/deactivate/deactivate": "注销账号", "uni_modules/uni-id-pages/pages/userinfo/realname-verify/realname-verify": "实名认证", "pages/articles/list": "文章列表", "pages/blog/edit": "编辑", "pages/self/editSelf": "编辑个人信息", "pages/self/favorites": "我的收藏", "pages/showMap/showMap": "商家地址" };
 const sys = index.getSystemInfoSync();
-const STAT_VERSION = "4.84";
+const STAT_VERSION = "4.85";
 const STAT_URL = "https://tongji.dcloud.io/uni/stat";
 const STAT_H5_URL = "https://tongji.dcloud.io/uni/stat.gif";
 const PAGE_PVER_TIME = 1800;

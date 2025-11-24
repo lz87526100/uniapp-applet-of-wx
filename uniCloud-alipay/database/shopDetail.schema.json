@@ -1,0 +1,78 @@
+{
+  "bsonType": "object",
+  "required": [
+    "shopName",
+    "phone",
+    "address"
+  ],
+  "properties": {
+    "_id": {
+      "description": "主键ID"
+    },
+    "shopName": {
+      "bsonType": "string",
+      "description": "店铺名称",
+      "label": "商家名称"
+    },
+    "shopPic": {
+      "bsonType": "string",
+      "description": "店铺头像",
+      "label": "商家头像"
+    },
+    "phone": {
+      "bsonType": "string",
+      "description": "联系电话",
+      "label": "电话"
+    },
+    "address": {
+      "bsonType": "string",
+      "description": "详细地址",
+      "label": "地址"
+    },
+    "location": {
+      "bsonType": "object",
+      "description": "店铺坐标位置",
+      "label": "地理位置",
+      "properties": {
+        "type": {
+          "bsonType": "string",
+          "enum": ["Point"],
+          "description": "GeoJSON类型"
+        },
+        "coordinates": {
+          "bsonType": "array",
+          "description": "经纬度坐标 [经度, 纬度]",
+          "items": {
+            "bsonType": "double"
+          }
+        }
+      }
+    },
+    "description": {
+      "bsonType": "string",
+      "description": "店铺介绍",
+      "label": "公告简介"
+    },
+    "businessHours": {
+      "bsonType": "string",
+      "description": "营业时间",
+      "label": "营业时间"
+    },
+    "rating": {
+      "bsonType": "int",
+      "description": "店铺评分",
+      "label": "评分"
+    },
+    "monthlyOrders": {
+      "bsonType": "int",
+      "description": "月销量",
+      "label": "月售单数"
+    }
+  },
+  "permission": {
+    "read": true,
+    "create": false,
+    "update": false,
+    "delete": false
+  }
+}

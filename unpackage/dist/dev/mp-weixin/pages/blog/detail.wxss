@@ -25,55 +25,344 @@
 /* 文章场景相关 */
 .detailLayout.data-v-f02f3071 {
   min-height: 100vh;
-  background: #fff;
+  background: #f8f9fa;
 }
 .soupDetail.data-v-f02f3071 {
-  padding: 50rpx 30rpx;
-  border-bottom: 12rpx solid #f7f7f7;
+  padding: 0;
 }
 .content.data-v-f02f3071 {
-  margin-top: 30rpx;
+  background: #fff;
+  min-height: 100vh;
+  /* 商家评价区域 - 新版设计 */
+  /* 用户信息区域 */
+  /* 评论内容样式 */
+  /* 图片区域 */
+  /* 操作工具栏 */
+}
+.content .shop-review-section.data-v-f02f3071 {
+  padding: 24rpx;
+  background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+}
+.content .shop-review-section .shop-card.data-v-f02f3071 {
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  box-shadow: 0 4rpx 24rpx rgba(0, 0, 0, 0.06);
+  border: 1rpx solid #f1f5f9;
+  /* 商家头部 */
+  /* 商家数据 */
+  /* 商家详情 */
+  /* 操作按钮 */
+}
+.content .shop-review-section .shop-card .shop-header.data-v-f02f3071 {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 24rpx;
+}
+.content .shop-review-section .shop-card .shop-header .shop-avatar-container.data-v-f02f3071 {
+  position: relative;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+.content .shop-review-section .shop-card .shop-header .shop-avatar-container .shop-avatar.data-v-f02f3071 {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 20rpx;
+  border: 3rpx solid #ffffff;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
+  background: #f8fafc;
+}
+.content .shop-review-section .shop-card .shop-header .shop-avatar-container .shop-badge.data-v-f02f3071 {
+  position: absolute;
+  bottom: -4rpx;
+  right: -4rpx;
+  width: 32rpx;
+  height: 32rpx;
+  background: linear-gradient(135deg, #4299e1, #3182ce);
+  border-radius: 50%;
+  border: 2rpx solid #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.content .shop-review-section .shop-card .shop-header .shop-avatar-container .shop-badge .badge-icon.data-v-f02f3071 {
+  color: #ffffff;
+  font-size: 18rpx;
+  font-weight: bold;
+}
+.content .shop-review-section .shop-card .shop-header .shop-main-info.data-v-f02f3071 {
+  flex: 1;
+  min-width: 0;
+}
+.content .shop-review-section .shop-card .shop-header .shop-main-info .shop-title-row.data-v-f02f3071 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12rpx;
+}
+.content .shop-review-section .shop-card .shop-header .shop-main-info .shop-title-row .shop-name.data-v-f02f3071 {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #1a202c;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 400rpx;
+}
+.content .shop-review-section .shop-card .shop-header .shop-main-info .shop-title-row .rating-display.data-v-f02f3071 {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #FFF8E1, #FFECB3);
+  padding: 6rpx 12rpx;
+  border-radius: 16rpx;
+  border: 1rpx solid #FFD54F;
+}
+.content .shop-review-section .shop-card .shop-header .shop-main-info .shop-title-row .rating-display .rating-star.data-v-f02f3071 {
+  color: #FFD700;
+  font-size: 24rpx;
+  margin-right: 4rpx;
+}
+.content .shop-review-section .shop-card .shop-header .shop-main-info .shop-title-row .rating-display .rating-value.data-v-f02f3071 {
+  font-size: 26rpx;
+  color: #FF6B35;
+  font-weight: 700;
+}
+.content .shop-review-section .shop-card .shop-header .shop-main-info .shop-tags.data-v-f02f3071 {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  flex-wrap: wrap;
+}
+.content .shop-review-section .shop-card .shop-header .shop-main-info .shop-tags .status-tag.data-v-f02f3071 {
+  display: flex;
+  align-items: center;
+  padding: 6rpx 12rpx;
+  border-radius: 16rpx;
+  font-size: 22rpx;
+}
+.content .shop-review-section .shop-card .shop-header .shop-main-info .shop-tags .status-tag.open.data-v-f02f3071 {
+  background: #f0fff4;
+  color: #22543d;
+}
+.content .shop-review-section .shop-card .shop-header .shop-main-info .shop-tags .status-tag.data-v-f02f3071:not(.open) {
+  background: #fed7d7;
+  color: #742a2a;
+}
+.content .shop-review-section .shop-card .shop-header .shop-main-info .shop-tags .status-tag .status-dot.data-v-f02f3071 {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+  margin-right: 6rpx;
+}
+.content .shop-review-section .shop-card .shop-header .shop-main-info .shop-tags .status-tag .status-dot.open.data-v-f02f3071 {
+  background: #48bb78;
+}
+.content .shop-review-section .shop-card .shop-header .shop-main-info .shop-tags .status-tag .status-dot.data-v-f02f3071:not(.open) {
+  background: #e53e3e;
+}
+.content .shop-review-section .shop-card .shop-header .shop-main-info .shop-tags .status-tag .status-text.data-v-f02f3071 {
+  font-size: 22rpx;
+  font-weight: 500;
+}
+.content .shop-review-section .shop-card .shop-header .shop-main-info .shop-tags .category-tag.data-v-f02f3071 {
+  background: #ebf8ff;
+  color: #2b6cb0;
+  padding: 6rpx 12rpx;
+  border-radius: 16rpx;
+  font-size: 22rpx;
+}
+.content .shop-review-section .shop-card .shop-stats.data-v-f02f3071 {
+  display: flex;
+  align-items: center;
+  background: #f8fafc;
+  border-radius: 16rpx;
+  padding: 20rpx;
+  margin-bottom: 20rpx;
+}
+.content .shop-review-section .shop-card .shop-stats .stat-item.data-v-f02f3071 {
+  flex: 1;
+  text-align: center;
+}
+.content .shop-review-section .shop-card .shop-stats .stat-item .stat-value.data-v-f02f3071 {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 4rpx;
+}
+.content .shop-review-section .shop-card .shop-stats .stat-item .stat-label.data-v-f02f3071 {
+  font-size: 22rpx;
+  color: #718096;
+}
+.content .shop-review-section .shop-card .shop-stats .stat-divider.data-v-f02f3071 {
+  width: 1rpx;
+  height: 32rpx;
+  background: #e2e8f0;
+}
+.content .shop-review-section .shop-card .shop-details.data-v-f02f3071 {
+  margin-bottom: 24rpx;
+}
+.content .shop-review-section .shop-card .shop-details .detail-item.data-v-f02f3071 {
+  display: flex;
+  align-items: center;
+  padding: 12rpx 0;
+  border-bottom: 1rpx solid #f7fafc;
+}
+.content .shop-review-section .shop-card .shop-details .detail-item.data-v-f02f3071:last-child {
+  border-bottom: none;
+}
+.content .shop-review-section .shop-card .shop-details .detail-item .detail-text.data-v-f02f3071 {
+  flex: 1;
+  font-size: 26rpx;
+  color: #4a5568;
+  margin-left: 12rpx;
+}
+.content .shop-review-section .shop-card .shop-details .detail-item .contact-btn.data-v-f02f3071 {
+  background: #48bb78;
+  color: white;
+  padding: 8rpx 16rpx;
+  border-radius: 12rpx;
+  font-size: 22rpx;
+  font-weight: 500;
+}
+.content .shop-review-section .shop-card .shop-actions.data-v-f02f3071 {
+  display: flex;
+  gap: 16rpx;
+}
+.content .shop-review-section .shop-card .shop-actions .action-btn.data-v-f02f3071 {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20rpx;
+  border-radius: 16rpx;
+  font-weight: 600;
+  font-size: 26rpx;
+}
+.content .shop-review-section .shop-card .shop-actions .action-btn.primary.data-v-f02f3071 {
+  background: linear-gradient(135deg, #FF6B35, #FF8E53);
+  color: white;
+}
+.content .shop-review-section .shop-card .shop-actions .action-btn.secondary.data-v-f02f3071 {
+  background: #ffffff;
+  color: #FF6B35;
+  border: 1rpx solid #FF6B35;
+}
+.content .shop-review-section .shop-card .shop-actions .action-btn .btn-text.data-v-f02f3071 {
+  margin-left: 8rpx;
 }
 .content .userinfo.data-v-f02f3071 {
   display: flex;
   align-items: center;
-  margin-bottom: 24rpx;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #f0f0f0;
 }
-.content .userinfo .avatar.data-v-f02f3071 {
-  width: 72rpx;
-  height: 72rpx;
+.content .userinfo .user-avatar-container .avatar.data-v-f02f3071 {
+  width: 80rpx;
+  height: 80rpx;
   border-radius: 50%;
-  margin-right: 16rpx;
+  margin-right: 20rpx;
+  border: 2rpx solid #f0f0f0;
 }
-.content .userinfo .username.data-v-f02f3071 {
-  font-size: 30rpx;
+.content .userinfo .user-info-main.data-v-f02f3071 {
+  flex: 1;
+}
+.content .userinfo .user-info-main .username.data-v-f02f3071 {
+  font-size: 32rpx;
   font-weight: 600;
-  color: #4f8bff;
+  color: #333;
+  display: block;
+  margin-bottom: 8rpx;
 }
-.content .userinfo .time.data-v-f02f3071 {
-  margin-left: auto;
+.content .userinfo .user-info-main .time.data-v-f02f3071 {
   font-size: 24rpx;
   color: #8b9ab6;
 }
-.content .text.data-v-f02f3071 {
-  font-size: 34rpx;
+.content .comment-content.data-v-f02f3071 {
+  padding: 30rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+.content .comment-content .comment-text.data-v-f02f3071 {
+  font-size: 36rpx;
   line-height: 1.8em;
-  color: #222;
+  color: #333;
+  word-break: break-word;
 }
 .content .pics.data-v-f02f3071 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12rpx;
-  margin-top: 20rpx;
+  gap: 16rpx;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #f0f0f0;
 }
 .content .pics .pic.data-v-f02f3071 {
   width: 100%;
   height: 100%;
   aspect-ratio: 1;
-  border-radius: 12rpx;
+  border-radius: 16rpx;
+  background-color: #f5f5f5;
+}
+.content .action-toolbar.data-v-f02f3071 {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 30rpx;
+}
+.content .action-toolbar .toolbar-item.data-v-f02f3071 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+}
+.content .action-toolbar .toolbar-item .icon-wrapper.data-v-f02f3071 {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8f9fa;
+  transition: all 0.3s ease;
+}
+.content .action-toolbar .toolbar-item .icon-wrapper.favorited.data-v-f02f3071 {
+  background: #FF5B5B;
+}
+.content .action-toolbar .toolbar-item .icon-wrapper.delete.data-v-f02f3071 {
+  background: #ffeaea;
+}
+.content .action-toolbar .toolbar-item .icon-wrapper.data-v-f02f3071:active {
+  transform: scale(0.95);
+}
+.content .action-toolbar .toolbar-item .btn-text.data-v-f02f3071 {
+  font-size: 24rpx;
+  color: #666;
 }
 .loading.data-v-f02f3071 {
   text-align: center;
-  padding: 40rpx;
+  padding: 100rpx 0;
   color: #999;
+}
+
+/* 响应式调整 */
+@media (max-width: 375px) {
+.shop-card.data-v-f02f3071 {
+    padding: 24rpx !important;
+}
+.shop-header.data-v-f02f3071 {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+.shop-header .shop-avatar-container.data-v-f02f3071 {
+    margin-right: 0 !important;
+    margin-bottom: 16rpx;
+}
+.shop-header .shop-title-row.data-v-f02f3071 {
+    flex-direction: column;
+    gap: 12rpx;
+}
+.shop-actions.data-v-f02f3071 {
+    flex-direction: column;
+}
 }

@@ -1,0 +1,314 @@
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 颜色变量 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+/* -------------------- 变量区 -------------------- */
+/* -------------------- 主结构 -------------------- */
+.shop-list.data-v-9a7db886 {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #CDE5FF 0%, #E9F3FF 100%);
+  display: flex;
+  flex-direction: column;
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* 头部：毛玻璃 */
+.head.data-v-9a7db886 {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 9;
+  backdrop-filter: blur(20rpx);
+  -webkit-backdrop-filter: blur(20rpx);
+  background: rgba(255, 255, 255, 0.65);
+  box-shadow: 0 2rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+/* 内容区 */
+.body.data-v-9a7db886 {
+  flex: 1;
+  background-color: rgba(255, 255, 255, 0.65);
+  border-radius: 32rpx 32rpx 0 0;
+  overflow: hidden;
+  margin-top: -16rpx;
+}
+.content.data-v-9a7db886 {
+  height: 100%;
+  background: transparent;
+  padding: 24rpx 0rpx 40rpx;
+}
+
+/* -------------------- 骨架屏 -------------------- */
+.skeleton .skeleton-item.data-v-9a7db886 {
+  background: white;
+  border-radius: 24rpx;
+  margin: 0 24rpx 24rpx;
+  overflow: hidden;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.06);
+}
+.skeleton .skeleton-item .skeleton-img.data-v-9a7db886 {
+  width: 100%;
+  height: 300rpx;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: wave-9a7db886 1.8s infinite;
+}
+.skeleton .skeleton-item .skeleton-body.data-v-9a7db886 {
+  padding: 28rpx;
+}
+.skeleton .skeleton-item .skeleton-line.data-v-9a7db886 {
+  height: 26rpx;
+  border-radius: 12rpx;
+  background: linear-gradient(90deg, #f5f5f5 25%, #eaeaea 50%, #f5f5f5 75%);
+  background-size: 200% 100%;
+  animation: wave-9a7db886 1.8s infinite;
+}
+.skeleton .skeleton-item .w-70.data-v-9a7db886 {
+  width: 70%;
+}
+.skeleton .skeleton-item .w-90.data-v-9a7db886 {
+  width: 90%;
+}
+.skeleton .skeleton-item .w-60.data-v-9a7db886 {
+  width: 60%;
+}
+.skeleton .skeleton-item .mt-8.data-v-9a7db886 {
+  margin-top: 8rpx;
+}
+@keyframes wave-9a7db886 {
+0% {
+    background-position: -200% 0;
+}
+100% {
+    background-position: 200% 0;
+}
+}
+/* -------------------- 店铺卡片 -------------------- */
+.shop-list-content.data-v-9a7db886 {
+  padding: 0 24rpx;
+}
+.shop-card.data-v-9a7db886 {
+  position: relative;
+  background: white;
+  border-radius: 24rpx;
+  margin-bottom: 24rpx;
+  overflow: hidden;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.shop-card.data-v-9a7db886:active {
+  transform: scale(0.98);
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.12);
+}
+.shop-card .shop-img.data-v-9a7db886 {
+  width: 100%;
+  height: auto;
+  display: block;
+  max-height: 400rpx;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.shop-card .shop-img.fade-in.data-v-9a7db886 {
+  opacity: 1;
+}
+.shop-card .shop-overlay.data-v-9a7db886 {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 160rpx;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.85), transparent);
+  z-index: 1;
+}
+.shop-card .shop-content.data-v-9a7db886 {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 28rpx;
+  color: white;
+  z-index: 2;
+  pointer-events: none;
+}
+.shop-card .shop-content .shop-top.data-v-9a7db886 {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16rpx;
+}
+.shop-card .shop-content .shop-top .shop-name.data-v-9a7db886 {
+  font-size: 32rpx;
+  font-weight: 700;
+  max-width: 70%;
+  line-height: 1.3;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+.shop-card .shop-content .shop-top .rating-badge.data-v-9a7db886 {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.2);
+  -webkit-backdrop-filter: blur(8rpx);
+          backdrop-filter: blur(8rpx);
+  padding: 6rpx 14rpx;
+  border-radius: 20rpx;
+  font-weight: bold;
+  font-size: 24rpx;
+}
+.shop-card .shop-content .shop-top .rating-badge .star-icon.data-v-9a7db886 {
+  font-size: 20rpx;
+  margin-right: 4rpx;
+}
+.shop-card .shop-content .shop-meta .address.data-v-9a7db886 {
+  display: flex;
+  align-items: flex-start;
+  font-size: 24rpx;
+  opacity: 0.9;
+}
+.shop-card .shop-content .shop-meta .address .text.data-v-9a7db886 {
+  flex: 1;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.shop-card .shop-content .shop-meta .meta-row.data-v-9a7db886 {
+  display: flex;
+  gap: 16rpx;
+  flex-wrap: wrap;
+  margin-top: 8rpx;
+}
+.shop-card .shop-content .shop-meta .meta-tag.data-v-9a7db886 {
+  font-size: 20rpx;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 4rpx 12rpx;
+  border-radius: 12rpx;
+  -webkit-backdrop-filter: blur(4rpx);
+          backdrop-filter: blur(4rpx);
+  white-space: nowrap;
+}
+.shop-card .shop-content .shop-meta .meta-tag.sales.data-v-9a7db886 {
+  color: #FFD700;
+}
+.shop-card .shop-content .shop-meta .meta-tag.time.data-v-9a7db886 {
+  color: #4ade80;
+}
+
+/* -------------------- 空状态 -------------------- */
+.empty-state.data-v-9a7db886 {
+  text-align: center;
+  padding: 140rpx 40rpx 100rpx;
+}
+.empty-state .empty-icon.data-v-9a7db886 {
+  font-size: 120rpx;
+  margin-bottom: 30rpx;
+  opacity: 0.6;
+}
+.empty-state .empty-title.data-v-9a7db886 {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 16rpx;
+}
+.empty-state .empty-desc.data-v-9a7db886 {
+  font-size: 26rpx;
+  color: #718096;
+  margin-bottom: 40rpx;
+  line-height: 1.5;
+}
+.empty-state .empty-btn.data-v-9a7db886 {
+  background: linear-gradient(135deg, #4F8BFF, #6AA6FF);
+  color: white;
+  border: none;
+  border-radius: 50rpx;
+  padding: 18rpx 60rpx;
+  font-size: 28rpx;
+  box-shadow: 0 8rpx 20rpx rgba(79, 139, 255, 0.4);
+  transition: all 0.2s;
+}
+.empty-state .empty-btn.data-v-9a7db886:active {
+  transform: scale(0.96);
+}
+
+/* -------------------- 加载更多 -------------------- */
+.load-more.data-v-9a7db886 {
+  padding: 40rpx 0;
+  text-align: center;
+}
+.load-more.data-v-9a7db886 .uni-load-more__text {
+  font-size: 26rpx;
+  color: #8B9AB6;
+}
+
+/* -------------------- 动画效果 -------------------- */
+.fade-in.data-v-9a7db886 {
+  animation: fadeIn-9a7db886 0.5s ease forwards;
+}
+@keyframes fadeIn-9a7db886 {
+from {
+    opacity: 0;
+}
+to {
+    opacity: 1;
+}
+}
+@keyframes float-9a7db886 {
+0%, 100% {
+    transform: translateY(0);
+}
+50% {
+    transform: translateY(-12rpx);
+}
+}
+@keyframes titleGlow-9a7db886 {
+from {
+    text-shadow: 0 0 10rpx rgba(79, 139, 255, 0.3);
+}
+to {
+    text-shadow: 0 0 20rpx rgba(74, 108, 247, 0.5), 0 0 30rpx rgba(79, 139, 255, 0.4);
+}
+}
+/* -------------------- 搜索框 -------------------- */
+.search-box.data-v-9a7db886 {
+  padding: 0 30rpx 40rpx;
+}
+.search-box.data-v-9a7db886 .uni-searchbar {
+  height: 88rpx;
+}
+.search-box.data-v-9a7db886 .uni-searchbar .uni-searchbar__input-box {
+  background: white !important;
+  border-radius: 50rpx !important;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
+  padding: 0 36rpx !important;
+}
+.search-box.data-v-9a7db886 .uni-searchbar .uni-searchbar__input-box input {
+  font-size: 28rpx;
+  color: #2d3748;
+}

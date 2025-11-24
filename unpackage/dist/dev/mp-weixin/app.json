@@ -40,7 +40,10 @@
     "pages/self/item",
     "pages/blog/detail",
     "pages/self/editSelf",
-    "pages/self/favorites"
+    "pages/self/favorites",
+    "pages/shopList/shopList",
+    "pages/shopList/shopDetail",
+    "pages/showMap/showMap"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -59,6 +62,12 @@
         "selectedIconPath": "/static/logo/home-h.png"
       },
       {
+        "text": "商家",
+        "pagePath": "pages/shopList/shopList",
+        "iconPath": "/static/logo/store.png",
+        "selectedIconPath": "/static/logo/store-h.png"
+      },
+      {
         "text": "我的",
         "pagePath": "pages/self/self",
         "iconPath": "/static/logo/self.png",
@@ -66,6 +75,10 @@
       }
     ]
   },
+  "requiredPrivateInfos": [
+    "getLocation",
+    "chooseLocation"
+  ],
   "plugins": {
     "route-plan": {
       "version": "2.0.1",

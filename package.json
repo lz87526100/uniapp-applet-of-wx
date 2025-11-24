@@ -1,5 +1,8 @@
 {
-  "dependencies": {
-    "dayjs": "^1.11.18"
-  }
+    "dependencies": {
+        "dayjs": "^1.11.18",
+        "@dcloudio/uni-app": "^3.0.0",
+        "@dcloudio/uni-mp-vue": "^3.0.0",
+        "vue": "^3.2.0"
+    }
 }

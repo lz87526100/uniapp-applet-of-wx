@@ -46,6 +46,7 @@
 ,{
     "path": "pages/demo-user/edit",
     "style": {
+        
         "navigationBarTitleText": "编辑"
     }
 }
@@ -121,10 +122,11 @@
 },
 {
     "path" : "pages/demo1009/demo1009",
-    "style" : 
-    {
-        "navigationBarTitleText" : ""
-    }
+     "style": {
+        "navigationBarTitleText": "地图导航",
+        "app-plus": {
+          "titleNView": false
+        }}
 },
 {
     "path": "uni_modules/uni-id-pages/pages/register/register",
@@ -245,6 +247,7 @@
     "path" : "pages/blog/edit",
     "style" : 
     {
+        
         "navigationBarTitleText" : "编辑"
     }
 },
@@ -277,6 +280,27 @@
       "navigationBarTitleText": "我的收藏"
 
     }
+},
+{
+    "path": "pages/shopList/shopList",
+    "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": ""
+    }
+},
+{
+    "path": "pages/shopList/shopDetail",
+    "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": ""
+    }
+},
+{
+    "path": "pages/showMap/showMap",
+    "style": {
+        "navigationBarTitleText": "商家地址",
+        "enablePullDownRefresh": true
+    }
 }
 ],
 	"globalStyle": {
@@ -294,6 +318,11 @@
               "pagePath": "pages/blog/list",
               "iconPath": "/static/logo/home.png",
               "selectedIconPath": "/static/logo/home-h.png"
+          },{
+              "text": "商家",
+              "pagePath": "pages/shopList/shopList",
+              "iconPath": "/static/logo/store.png",
+              "selectedIconPath": "/static/logo/store-h.png"
           },
           {
               "text": "我的",

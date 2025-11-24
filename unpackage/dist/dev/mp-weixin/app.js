@@ -43,6 +43,9 @@ if (!Math) {
   "./pages/blog/detail.js";
   "./pages/self/editSelf.js";
   "./pages/self/favorites.js";
+  "./pages/shopList/shopList.js";
+  "./pages/shopList/shopDetail.js";
+  "./pages/showMap/showMap.js";
 }
 const _sfc_main = {
   onLaunch() {

@@ -60,6 +60,42 @@
   padding: 24rpx 0rpx 40rpx;
 }
 
+/* -------------------- 修复：地图悬浮按钮样式 -------------------- */
+.fab-map.data-v-9a7db886 {
+  position: fixed;
+  right: 50rpx;
+  bottom: 140rpx;
+  z-index: 999;
+  width: 105rpx;
+  height: 105rpx;
+  background: linear-gradient(135deg, #4F8BFF 0%, #6AA6FF 100%);
+  border-radius: 50%;
+  box-shadow: 0 8rpx 32rpx rgba(79, 139, 255, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: fadeInUp-9a7db886 0.6s ease both;
+}
+.fab-map.data-v-9a7db886:active {
+  transform: scale(0.9);
+  box-shadow: 0 4rpx 16rpx rgba(79, 139, 255, 0.6);
+}
+.fab-map .map-icon.data-v-9a7db886 {
+  font-size: 32rpx;
+  color: white;
+  font-weight: 300;
+}
+@keyframes fadeInUp-9a7db886 {
+from {
+    opacity: 0;
+    transform: translateY(40rpx) scale(0.8);
+}
+to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+}
 /* -------------------- 骨架屏 -------------------- */
 .skeleton .skeleton-item.data-v-9a7db886 {
   background: white;
@@ -125,7 +161,6 @@
 .shop-card .shop-img.data-v-9a7db886 {
   width: 100%;
   height: auto;
-  display: block;
   max-height: 400rpx;
   object-fit: cover;
   opacity: 0;
@@ -203,7 +238,6 @@
   display: flex;
   gap: 16rpx;
   flex-wrap: wrap;
-  margin-top: 8rpx;
 }
 .shop-card .shop-content .shop-meta .meta-tag.data-v-9a7db886 {
   font-size: 20rpx;

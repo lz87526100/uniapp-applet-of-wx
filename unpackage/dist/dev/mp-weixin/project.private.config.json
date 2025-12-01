@@ -10,7 +10,7 @@
       "list": [
         {
           "name": "pages/demo1009/demo1009",
-          "pathName": "pages/showMap/showMap",
+          "pathName": "pages/blog/list",
           "query": "",
           "scene": null,
           "launchMode": "default"

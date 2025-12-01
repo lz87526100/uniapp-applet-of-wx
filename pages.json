@@ -277,7 +277,7 @@
 {
     "path": "pages/self/favorites",
   "style": {
-      "navigationBarTitleText": "我的收藏"
+      "navigationBarTitleText": "评论收藏"
 
     }
 },
@@ -301,6 +301,30 @@
     "style": {
         "navigationBarTitleText": "商家地址",
         "enablePullDownRefresh": true
+    }
+},
+{
+    "path": "pages/self/shopFavorites",
+    "style": {
+        "navigationBarTitleText": "店铺收藏"
+    }
+},
+{
+    "path": "pages/showMap/showFavoritesMap",
+    "style": {
+        "navigationBarTitleText": "收藏店铺地图"
+    }
+},
+{
+    "path": "pages/blog/choseEdit",
+    "style": {
+        "navigationBarTitleText": "选择店铺评论"
+    }
+},
+{
+    "path": "pages/shopList/shopComments",
+    "style": {
+        "navigationBarTitleText": "店铺评论汇总"
     }
 }
 ],

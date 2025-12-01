@@ -39,7 +39,7 @@
                     </view>
                 </view>
 
-                <navigator url="" hover-class="item-active">
+           <!--     <navigator url="" hover-class="item-active">
                     <view class="item" hover-class="item-active">
                         <view class="left">
                             <view class="icon" style="background-image: linear-gradient(135deg, #9c4dcc, #b388ff);">
@@ -52,7 +52,7 @@
                             <uni-icons type="right" size="22" color="#ccc"></uni-icons>
                         </view>
                     </view>
-                </navigator>
+                </navigator> -->
 
                 <navigator url="/pages/self/favorites" hover-class="item-active">
                     <view class="item" hover-class="item-active">
@@ -60,7 +60,7 @@
                             <view class="icon" style="background-image: linear-gradient(135deg, #ffc857, #ff9a3c);">
                                 <uni-icons custom-prefix="iconfont" type="xxm-star-fill" size="18" color="#fff"></uni-icons>
                             </view>
-                            <view class="name">我的收藏</view>
+                            <view class="name">评论收藏</view>
                         </view>
                         <view class="right">
                             <!-- 使用 favoritesCount 而不是 count -->
@@ -69,6 +69,20 @@
                         </view>
                     </view>
                 </navigator>
+
+                <!-- 新增：店铺收藏 -->
+                <view class="item" hover-class="item-active" @click="goToShopFavorites">
+                    <view class="left">
+                        <view class="icon" style="background-image: linear-gradient(135deg, #FF6B35, #FF9F43);">
+                            <uni-icons custom-prefix="iconfont" type="xxm-like-fill" size="18" color="#fff"></uni-icons>
+                        </view>
+                        <view class="name">店铺收藏</view>
+                    </view>
+                    <view class="right">
+                        <text class="count">{{ shopFavoritesCount }}</text>
+                        <uni-icons type="right" size="22" color="#ccc"></uni-icons>
+                    </view>
+                </view>
                 
                 <navigator url="" hover-class="item-active">
                     <view class="item" hover-class="item-active">
@@ -137,6 +151,12 @@ const userInfo = ref({
 // 我的评论数量
 const myCommentsCount = ref(0)
 
+// 收藏数量
+const favoritesCount = ref(0)
+
+// 店铺收藏数量
+const shopFavoritesCount = ref(0)
+
 // 跳转到我的评论页面
 const goToMyComments = () => {
     if (!userInfo.value._id) {
@@ -154,6 +174,34 @@ const goToMyComments = () => {
         url: `/pages/self/item?userId=${userInfo.value._id}`,
         success: () => {
             console.log('跳转到我的评论页面成功')
+        },
+        fail: (error) => {
+            console.error('跳转失败:', error)
+            uni.showToast({
+                title: '跳转失败',
+                icon: 'none'
+            })
+        }
+    })
+}
+
+// 跳转到店铺收藏页面
+const goToShopFavorites = () => {
+    if (!userInfo.value._id) {
+        console.log('用户ID为空，无法跳转')
+        uni.showToast({
+            title: '请先登录',
+            icon: 'none'
+        })
+        return
+    }
+    
+    console.log('跳转到店铺收藏页面，用户ID:', userInfo.value._id)
+    
+    uni.navigateTo({
+        url: '/pages/self/shopFavorites',
+        success: () => {
+            console.log('跳转到店铺收藏页面成功')
         },
         fail: (error) => {
             console.error('跳转失败:', error)
@@ -194,7 +242,6 @@ const getMyCommentsCount = async () => {
     myCommentsCount.value = 0
   }
 }
-
 
 // 监听编辑页面返回的数据
 const setupEventListeners = () => {
@@ -254,9 +301,6 @@ onUnmounted(() => {
     uni.$off('userInfoUpdated')
 })
 
-// 收藏数量
-const favoritesCount = ref(0)
-
 // 获取收藏数量
 async function getFavoritesCount() {
     try {
@@ -267,6 +311,36 @@ async function getFavoritesCount() {
     } catch (error) {
         console.error('获取收藏数量失败:', error);
         favoritesCount.value = 0;
+    }
+}
+
+// 获取店铺收藏数量
+async function getShopFavoritesCount() {
+    try {
+        console.log('开始获取店铺收藏数量...')
+        const userInfoFromStorage = uni.getStorageSync('uni-id-pages-userInfo')
+        if (!userInfoFromStorage || !userInfoFromStorage._id) {
+            shopFavoritesCount.value = 0
+            return
+        }
+
+        const articlesCloudObj = uniCloud.importObject('articlesCloudObj')
+        const res = await articlesCloudObj.getShopFavoritesList({
+            userId: userInfoFromStorage._id,
+            page: 1,
+            size: 100
+        })
+
+        if (res.errCode === 0) {
+            shopFavoritesCount.value = res.data.list?.length || 0
+            console.log('店铺收藏数量:', shopFavoritesCount.value)
+        } else {
+            console.error('获取店铺收藏数量失败:', res.errMsg)
+            shopFavoritesCount.value = 0
+        }
+    } catch (error) {
+        console.error('获取店铺收藏数量异常:', error)
+        shopFavoritesCount.value = 0
     }
 }
 
@@ -516,6 +590,7 @@ onShow(() => {
     
     // 添加收藏数量获取
     getFavoritesCount()
+    getShopFavoritesCount()
 })
 
 // 下拉刷新

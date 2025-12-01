@@ -22,6 +22,12 @@ const _sfc_main = {
     common_vendor.onMounted(() => {
       loadShops(1);
     });
+    function goToMap() {
+      common_vendor.index.__f__("log", "at pages/shopList/shopList.vue:113", "跳转到地图页面");
+      common_vendor.index.navigateTo({
+        url: "/pages/showMap/showMap"
+      });
+    }
     async function loadShops(page = 1) {
       var _a, _b;
       if (loading.value || loadingMore.value)
@@ -127,7 +133,7 @@ const _sfc_main = {
         }),
         d: shopsList.value.length === 0 && !loading.value
       }, shopsList.value.length === 0 && !loading.value ? {
-        e: common_vendor.t(searchKeyword.value ? `未找到“${searchKeyword.value}”相关店铺` : "暂无推荐商家"),
+        e: common_vendor.t(searchKeyword.value ? `未找到"${searchKeyword.value}"相关店铺` : "暂无推荐商家"),
         f: common_vendor.o(($event) => loadShops(1))
       } : {}, {
         g: shopsList.value.length > 0
@@ -137,7 +143,8 @@ const _sfc_main = {
           iconType: "auto"
         })
       } : {}), {
-        i: common_vendor.o(loadMore)
+        i: common_vendor.o(loadMore),
+        j: common_vendor.o(goToMap)
       });
     };
   }

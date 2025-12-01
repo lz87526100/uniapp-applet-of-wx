@@ -1,0 +1,7 @@
+{
+  "name": "shopFavoritesCloudobj",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

@@ -72,21 +72,21 @@
                     <text class="username">{{ item.user_id[0].nickname || '匿名用户' }}</text>
                   </view>
                   
-                  <!-- 商家头像和名字 -->
-                  <view class="shop-info" v-else>
-                    <image
-                      class="shop-avatar"
-                      :src="getShopAvatar(item.shop_id)"
-                      mode="aspectFill"
-                      @error="handleShopAvatarError"
-                    />
-                    <text class="shop-name">{{ getShopName(item.shop_id) }}</text>
-                    <!-- 评分显示 -->
-                    <view class="shop-rating" v-if="item.rating">
-                      <text class="rating-star">★</text>
-                      <text class="rating-value">{{ item.rating }}</text>
-                    </view>
-                  </view>
+              <!-- 商家头像和名字 -->
+              <view class="shop-info" v-else @click="goShopDetail(item.shop_id)">
+                <image
+                  class="shop-avatar"
+                  :src="getShopAvatar(item.shop_id)"
+                  mode="aspectFill"
+                  @error="handleShopAvatarError"
+                />
+                <text class="shop-name">{{ getShopName(item.shop_id) }}</text>
+                <!-- 评分显示 -->
+                <view class="shop-rating" v-if="item.rating">
+                  <text class="rating-star">★</text>
+                  <text class="rating-value">{{ item.rating }}</text>
+                </view>
+              </view>
                   
                   <!-- 评论内容 -->
                   <view class="title-area">
@@ -183,6 +183,22 @@ onReachBottom(() => {
 onPullDownRefresh(() => {
   onRefresh();
 });
+
+// 跳转到店铺详情页
+const goShopDetail = (shopId) => {
+  if (!shopId) {
+    uni.showToast({
+      title: '店铺信息不存在',
+      icon: 'none'
+    });
+    return;
+  }
+  
+  console.log('跳转到店铺详情页，店铺ID:', shopId);
+  uni.navigateTo({
+    url: `/pages/shopList/shopDetail?id=${shopId}`
+  });
+};
 
 // 修改 goDetail 函数
 const goDetail = (articleId, shopId) => {
@@ -597,7 +613,7 @@ function touchEnd(id) {
 
 /* 发布 */
 function goAdd() {
-  uni.navigateTo({ url: '/pages/blog/edit' });
+  uni.navigateTo({ url: '/pages/blog/choseEdit' });
 }
 
 // 页面卸载时移除监听
@@ -795,48 +811,56 @@ $transition: all .3s cubic-bezier(.4, 0, .2, 1);
         }
         
         /* 商家信息样式 */
-        .shop-info {
-          display: flex;
-          align-items: center;
-          gap: 12rpx;
-          min-width: 120rpx;
-          
-          .shop-avatar {
-            width: 48rpx;
-            height: 48rpx;
-            border-radius: 12rpx; /* 商家头像用圆角矩形 */
-            border: 2rpx solid #f0f0f0;
-          }
-          
-          .shop-name {
-            font-size: 24rpx;
-            color: #FF6B35; /* 商家名称用特殊颜色 */
-            font-weight: 600;
-            white-space: nowrap;
-          }
-          
-          .shop-rating {
-            display: flex;
-            align-items: center;
-            background: #FFF8E1;
-            padding: 4rpx 8rpx;
-            border-radius: 8rpx;
-            margin-left: 8rpx;
-            
-            .rating-star {
-              color: #FFD700;
-              font-size: 20rpx;
-              margin-right: 2rpx;
-            }
-            
-            .rating-value {
-              font-size: 20rpx;
-              color: #FF6B35;
-              font-weight: 600;
-            }
-          }
-        }
-        
+.shop-info {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  min-width: 120rpx;
+  padding: 8rpx 12rpx;
+  border-radius: 16rpx;
+  transition: all 0.2s ease;
+  
+  &:active {
+    background-color: rgba(255, 107, 53, 0.1);
+    transform: scale(0.98);
+  }
+  
+  .shop-avatar {
+    width: 48rpx;
+    height: 48rpx;
+    border-radius: 12rpx;
+    border: 2rpx solid #f0f0f0;
+  }
+  
+  .shop-name {
+    font-size: 24rpx;
+    color: #FF6B35;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  
+  .shop-rating {
+    display: flex;
+    align-items: center;
+    background: #FFF8E1;
+    padding: 4rpx 8rpx;
+    border-radius: 8rpx;
+    margin-left: 8rpx;
+    
+    .rating-star {
+      color: #FFD700;
+      font-size: 20rpx;
+      margin-right: 2rpx;
+    }
+    
+    .rating-value {
+      font-size: 20rpx;
+      color: #FF6B35;
+      font-weight: 600;
+    }
+  }
+}
+ 
         .comment-content {
           flex: 1;
           

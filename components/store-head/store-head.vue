@@ -4,8 +4,10 @@
     <!-- 状态栏占位 -->
     <!-- <view class="statusBar" :style="{ height: getStatusBarHeight() + 'px' }"></view> -->
     <!-- 标题栏（原 navBar 区域）-->
+    
+    <!-- #ifdef MP-WEIXIN -->
    <view class="navBar" :style="{ height: getTitleBarHeight() + 'px' }"></view>
-
+  <!-- #endif -->
     <!-- 新增：商家标题区域（替代原来的 .header） -->
     <view class="shop-header">
       <view class="title-wrapper">

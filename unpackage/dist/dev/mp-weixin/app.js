@@ -46,6 +46,10 @@ if (!Math) {
   "./pages/shopList/shopList.js";
   "./pages/shopList/shopDetail.js";
   "./pages/showMap/showMap.js";
+  "./pages/self/shopFavorites.js";
+  "./pages/showMap/showFavoritesMap.js";
+  "./pages/blog/choseEdit.js";
+  "./pages/shopList/shopComments.js";
 }
 const _sfc_main = {
   onLaunch() {

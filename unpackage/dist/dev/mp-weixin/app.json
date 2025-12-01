@@ -43,7 +43,11 @@
     "pages/self/favorites",
     "pages/shopList/shopList",
     "pages/shopList/shopDetail",
-    "pages/showMap/showMap"
+    "pages/showMap/showMap",
+    "pages/self/shopFavorites",
+    "pages/showMap/showFavoritesMap",
+    "pages/blog/choseEdit",
+    "pages/shopList/shopComments"
   ],
   "window": {
     "backgroundTextStyle": "light",

@@ -7393,7 +7393,7 @@ function isConsoleWritable() {
 function initRuntimeSocketService() {
   const hosts = "169.254.221.81,192.168.1.2,169.254.0.93,127.0.0.1";
   const port = "8090";
-  const id = "mp-weixin_PS8p3u";
+  const id = "mp-weixin_UMbJFJ";
   const lazy = typeof swan !== "undefined";
   let restoreError = lazy ? () => {
   } : initOnError();
@@ -8594,7 +8594,7 @@ const pages = [
   {
     path: "pages/self/favorites",
     style: {
-      navigationBarTitleText: "我的收藏"
+      navigationBarTitleText: "评论收藏"
     }
   },
   {
@@ -8607,8 +8607,8 @@ const pages = [
   {
     path: "pages/shopList/shopDetail",
     style: {
-      navigationStyle: "custom",
-      navigationBarTitleText: ""
+      navigationBarTitleText: "",
+      navigationStyle: "custom"
     }
   },
   {
@@ -8616,6 +8616,30 @@ const pages = [
     style: {
       navigationBarTitleText: "商家地址",
       enablePullDownRefresh: true
+    }
+  },
+  {
+    path: "pages/self/shopFavorites",
+    style: {
+      navigationBarTitleText: "店铺收藏"
+    }
+  },
+  {
+    path: "pages/showMap/showFavoritesMap",
+    style: {
+      navigationBarTitleText: "收藏店铺地图"
+    }
+  },
+  {
+    path: "pages/blog/choseEdit",
+    style: {
+      navigationBarTitleText: "选择店铺评论"
+    }
+  },
+  {
+    path: "pages/shopList/shopComments",
+    style: {
+      navigationBarTitleText: "店铺评论汇总"
     }
   }
 ];
@@ -8991,7 +9015,7 @@ class S {
 function T(e2) {
   return e2 && "string" == typeof e2 ? JSON.parse(e2) : e2;
 }
-const b = true, E = "mp-weixin", A = T(define_process_env_UNI_SECURE_NETWORK_CONFIG_default), P = E, C = T('{"address":["127.0.0.1","169.254.221.81","169.254.0.93","192.168.1.5"],"servePort":7000,"debugPort":9000,"initialLaunchType":"remote","skipFiles":["<node_internals>/**","E:/movie/HBuilderX.4.57.2025032507/HBuilderX/plugins/unicloud/**/*.js"]}'), O = T('[{"provider":"alipay","spaceName":"zfb-demo","spaceId":"env-00jxtt1yppya","spaceAppId":"2021005176658369","accessKey":"3czBOclNFKaAdGdL","secretKey":"LbXD2EJnJIXfhuB9"}]') || [];
+const b = true, E = "mp-weixin", A = T(define_process_env_UNI_SECURE_NETWORK_CONFIG_default), P = E, C = T('{"address":["127.0.0.1","169.254.221.81","169.254.0.93","192.168.1.3"],"servePort":7000,"debugPort":9000,"initialLaunchType":"remote","skipFiles":["<node_internals>/**","E:/movie/HBuilderX.4.57.2025032507/HBuilderX/plugins/unicloud/**/*.js"]}'), O = T('[{"provider":"alipay","spaceName":"zfb-demo","spaceId":"env-00jxtt1yppya","spaceAppId":"2021005176658369","accessKey":"3czBOclNFKaAdGdL","secretKey":"LbXD2EJnJIXfhuB9"}]') || [];
 let N = "";
 try {
   N = "__UNI__B858315";
@@ -11514,7 +11538,7 @@ let er = new class {
 })();
 var tr = er;
 var define_process_env_UNI_STATISTICS_CONFIG_default = { enable: true };
-var define_process_env_UNI_STAT_TITLE_JSON_default = { "pages/self/self": "我的", "pages/demo-user/list": "列表", "pages/index/index": "uni-app", "pages/demo-user/add": "新增", "pages/demo-user/edit": "编辑", "pages/demo-user/detail": "详情", "pages/demo0719/list": "列表", "pages/demo0719/detail": "详情", "pages/demo0719/update": "更新", "pages/demo1009/demo1009": "地图导航", "uni_modules/uni-id-pages/pages/register/register": "注册", "uni_modules/uni-id-pages/pages/login/login-withoutpwd": "登录", "uni_modules/uni-id-pages/pages/login/login-withpwd": "账号密码登录", "uni_modules/uni-id-pages/pages/login/login-smscode": "手机验证码登录", "uni_modules/uni-id-pages/pages/userinfo/userinfo": "个人资料", "uni_modules/uni-id-pages/pages/userinfo/bind-mobile/bind-mobile": "绑定手机号码", "uni_modules/uni-id-pages/pages/register/register-by-email": "邮箱验证码注册", "uni_modules/uni-id-pages/pages/retrieve/retrieve": "重置密码", "uni_modules/uni-id-pages/pages/retrieve/retrieve-by-email": "通过邮箱重置密码", "uni_modules/uni-id-pages/pages/userinfo/change_pwd/change_pwd": "修改密码", "uni_modules/uni-id-pages/pages/register/register-admin": "注册管理员账号", "uni_modules/uni-id-pages/pages/userinfo/set-pwd/set-pwd": "设置密码", "uni_modules/uni-id-pages/pages/userinfo/deactivate/deactivate": "注销账号", "uni_modules/uni-id-pages/pages/userinfo/realname-verify/realname-verify": "实名认证", "pages/articles/list": "文章列表", "pages/blog/edit": "编辑", "pages/self/editSelf": "编辑个人信息", "pages/self/favorites": "我的收藏", "pages/showMap/showMap": "商家地址" };
+var define_process_env_UNI_STAT_TITLE_JSON_default = { "pages/self/self": "我的", "pages/demo-user/list": "列表", "pages/index/index": "uni-app", "pages/demo-user/add": "新增", "pages/demo-user/edit": "编辑", "pages/demo-user/detail": "详情", "pages/demo0719/list": "列表", "pages/demo0719/detail": "详情", "pages/demo0719/update": "更新", "pages/demo1009/demo1009": "地图导航", "uni_modules/uni-id-pages/pages/register/register": "注册", "uni_modules/uni-id-pages/pages/login/login-withoutpwd": "登录", "uni_modules/uni-id-pages/pages/login/login-withpwd": "账号密码登录", "uni_modules/uni-id-pages/pages/login/login-smscode": "手机验证码登录", "uni_modules/uni-id-pages/pages/userinfo/userinfo": "个人资料", "uni_modules/uni-id-pages/pages/userinfo/bind-mobile/bind-mobile": "绑定手机号码", "uni_modules/uni-id-pages/pages/register/register-by-email": "邮箱验证码注册", "uni_modules/uni-id-pages/pages/retrieve/retrieve": "重置密码", "uni_modules/uni-id-pages/pages/retrieve/retrieve-by-email": "通过邮箱重置密码", "uni_modules/uni-id-pages/pages/userinfo/change_pwd/change_pwd": "修改密码", "uni_modules/uni-id-pages/pages/register/register-admin": "注册管理员账号", "uni_modules/uni-id-pages/pages/userinfo/set-pwd/set-pwd": "设置密码", "uni_modules/uni-id-pages/pages/userinfo/deactivate/deactivate": "注销账号", "uni_modules/uni-id-pages/pages/userinfo/realname-verify/realname-verify": "实名认证", "pages/articles/list": "文章列表", "pages/blog/edit": "编辑", "pages/self/editSelf": "编辑个人信息", "pages/self/favorites": "评论收藏", "pages/showMap/showMap": "商家地址", "pages/self/shopFavorites": "店铺收藏", "pages/showMap/showFavoritesMap": "收藏店铺地图", "pages/blog/choseEdit": "选择店铺评论", "pages/shopList/shopComments": "店铺评论汇总" };
 const sys = index.getSystemInfoSync();
 const STAT_VERSION = "4.85";
 const STAT_URL = "https://tongji.dcloud.io/uni/stat";

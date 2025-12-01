@@ -1,13 +1,20 @@
 <template>
+   
   <view class="shop-detail" v-if="shopInfo">
     <!-- 导航栏 - 置顶显示 -->
+    <!-- #ifdef MP-WEIXIN -->
+     <view class="navBar" :style="{ height: getTitleBarHeight() + 'px' }"></view>
+    <!-- #endif -->
+    
     <view class="nav-bar">
       <view class="nav-left" @click="goBack">
         <text class="back-icon">←</text>
       </view>
       <view class="nav-title">{{ shopInfo.shopName }}</view>
       <view class="nav-right">
+          <!-- #ifdef H5 -->
         <text class="share-icon" @click="shareShop">分享</text>
+        <!-- #endif -->
       </view>
     </view>
 
@@ -73,8 +80,8 @@
               
               <!-- 评论和电话按钮 - 并列显示 -->
               <view class="action-buttons">
-                <view class="favorite-btn">
-                  <view class="favorite-badge" @click="toggleFavorite">
+                <view class="favorite-btn" @click="toggleFavorite">
+                  <view class="favorite-badge">
                     <text class="favorite-icon">{{ isFavorite ? '❤️' : '🤍' }}</text>
                   </view>
                 </view>
@@ -108,6 +115,15 @@
             </view>
           </view>
         </view>
+
+ <!-- 店铺介绍 -->
+ <view class="info-section" v-if="shopInfo.description">
+   <view class="section-header">
+     <text class="section-icon">📝</text>
+     <text class="section-title">店铺介绍</text>
+   </view>
+   <text class="shop-description">{{ shopInfo.description }}</text>
+ </view>
 
         <!-- 合并的店铺位置和地址信息 -->
         <view class="info-section location-address-section">
@@ -159,14 +175,7 @@
           </view>
         </view>
 
-        <!-- 店铺介绍 -->
-        <view class="info-section" v-if="shopInfo.description">
-          <view class="section-header">
-            <text class="section-icon">📝</text>
-            <text class="section-title">店铺介绍</text>
-          </view>
-          <text class="shop-description">{{ shopInfo.description }}</text>
-        </view>
+ 
       </view>
 
       <!-- 菜单/商品区域 -->
@@ -215,69 +224,70 @@
       <view class="reviews-section">
         <view class="section-header">
           <text class="section-title">用户评价</text>
-          <text class="see-all" @click="viewAllReviews" v-if="hasReviews">
-            查看全部({{ reviewsTotal }})
-          </text>
+            <text class="see-all" @click="goToShopComments" v-if="hasReviews">
+              查看全部({{ reviewsTotal }})
+            </text>
         </view>
         
-<!-- 评论列表 -->
-<view class="reviews-list" v-if="hasReviews">
-  <view 
-    class="review-item" 
-    v-for="review in displayReviews" 
-    :key="review.id"
-    @click="goToReviewDetail(review)"
-  >
-    <!-- 用户信息 -->
-    <view class="review-user">
-      <image class="user-avatar" :src="review.avatar" mode="aspectFill" 
-        @error="handleAvatarError"
-        @load="onAvatarLoad(review.userId, review.avatar)" />
-      <view class="user-info">
-        <text class="user-name">{{ review.userName }}</text>
-        <view class="review-meta">
-          <view class="rating-stars small">
-            <text 
-              class="star" 
-              v-for="n in 5" 
-              :key="n"
-              :class="{ filled: n <= review.rating }"
-            >★</text>
+        <!-- 评论列表 -->
+        <view class="reviews-list" v-if="hasReviews">
+          <view 
+            class="review-item" 
+            v-for="review in displayReviews" 
+            :key="review.id"
+            @click="goToReviewDetail(review)"
+          >
+            <!-- 用户信息 -->
+            <view class="review-user">
+              <image class="user-avatar" :src="review.avatar" mode="aspectFill" 
+                @error="handleAvatarError"
+                @load="onAvatarLoad(review.userId, review.avatar)" />
+              <view class="user-info">
+                <text class="user-name">{{ review.userName }}</text>
+                <view class="review-meta">
+                  <view class="rating-stars small">
+                    <text 
+                      class="star" 
+                      v-for="n in 5" 
+                      :key="n"
+                      :class="{ filled: n <= review.rating }"
+                    >★</text>
+                  </view>
+                  <text class="review-time">{{ review.time }}</text>
+                </view>
+              </view>
+            </view>
+            
+            <!-- 评论内容 -->
+            <view class="review-content">
+              <text class="review-text">{{ review.content }}</text>
+            </view>
+            
+            <!-- 评论图片 -->
+            <view class="review-images" v-if="review.images && review.images.length > 0">
+              <scroll-view scroll-x class="images-scroll">
+                <view class="images-list">
+                  <image 
+                    class="review-image" 
+                    v-for="(img, index) in review.images" 
+                    :key="index"
+                    :src="getSafeImageUrl(img)" 
+                    mode="aspectFill"
+                    @click.stop="previewImage(review.images, index)"
+                    @error="handleImageError"
+                  />
+                </view>
+              </scroll-view>
+            </view>
           </view>
-          <text class="review-time">{{ review.time }}</text>
-        </view>
-      </view>
-    </view>
-    
-    <!-- 评论内容 -->
-    <view class="review-content">
-      <text class="review-text">{{ review.content }}</text>
-    </view>
-    
-    <!-- 评论图片 -->
-    <view class="review-images" v-if="review.images && review.images.length > 0">
-      <scroll-view scroll-x class="images-scroll">
-        <view class="images-list">
-          <image 
-            class="review-image" 
-            v-for="(img, index) in review.images" 
-            :key="index"
-            :src="getSafeImageUrl(img)" 
-            mode="aspectFill"
-            @click.stop="previewImage(review.images, index)"
-            @error="handleImageError"
-          />
-        </view>
-      </scroll-view>
-    </view>
-  </view>
-  
-  <!-- 加载更多 -->
-  <view class="load-more" v-if="displayReviews.length < reviewsTotal" @click="viewAllReviews">
-    <text class="load-more-text">查看全部{{ reviewsTotal }}条评价</text>
-    <text class="load-more-icon">→</text>
-  </view>
-</view>   
+          
+          <!-- 加载更多 -->
+          <view class="load-more" v-if="displayReviews.length < reviewsTotal" @click="viewAllReviews">
+            <text class="load-more-text">查看全部{{ reviewsTotal }}条评价</text>
+            <text class="load-more-icon">→</text>
+          </view>
+        </view>   
+        
         <!-- 无评论状态 -->
         <view class="empty-reviews" v-else>
           <text class="empty-icon">💬</text>
@@ -288,6 +298,19 @@
         <!-- 评论加载状态 -->
         <view class="reviews-loading" v-if="reviewsLoading">
           <uni-load-more status="loading" content="加载评价中..." />
+        </view>
+      </view>
+    </view>
+
+    <!-- 底部固定评论框 -->
+    <view class="fixed-comment-bar" :class="{ 'with-safe-area': hasSafeArea }">
+      <view class="comment-input-wrapper" @click="goToCommentEdit">
+        <view class="comment-input-placeholder">
+          <text class="placeholder-icon">💬</text>
+          <text class="placeholder-text">分享您的用餐体验...</text>
+        </view>
+        <view class="comment-btn">
+          <text class="btn-text">评论</text>
         </view>
       </view>
     </view>
@@ -312,6 +335,14 @@
 <script setup>
 import { ref, computed, onMounted, reactive } from 'vue';
 import { onLoad, onShow } from '@dcloudio/uni-app';
+// #ifdef MP-WEIXIN
+import { getStatusBarHeight, getTitleBarHeight } from "@/utils/system.js"
+// #endif
+
+// #ifdef H5
+// H5平台不需要这些方法
+const getTitleBarHeight = () => 0
+// #endif
 
 // 响应式数据
 const shopInfo = ref(null);
@@ -321,6 +352,12 @@ const isFavorite = ref(false);
 const hasMenu = ref(true);
 const shopId = ref('');
 const activeCategory = ref(1);
+const hasSafeArea = ref(false);
+
+// 用户相关数据
+const currentUser = ref(null);
+const userId = ref('');
+const isLoggedIn = ref(false);
 
 // 评论相关数据
 const reviews = ref([]);
@@ -339,37 +376,9 @@ const mapScale = ref(16);
 const mapMarkers = ref([]);
 const mapContext = ref(null);
 
-// 用户头像缓存 - 参考 blogList 页面
+// 用户头像缓存
 const userAvatarCache = ref(new Map());
 const MAX_CACHE_SIZE = 30;
-
-// 跳转到评论详情页面
-function goToReviewDetail(review) {
-  if (!review || !review.id) {
-    uni.showToast({
-      title: '评论信息不完整',
-      icon: 'none'
-    });
-    return;
-  }
-
-  // 构建跳转URL，包含评论ID和店铺ID
-  const url = `/pages/blog/detail?id=${review.id}&shopId=${shopInfo.value?._id || ''}`;
-  
-  console.log('🔄 跳转到评论详情:', url);
-  
-  uni.navigateTo({
-    url: url,
-    fail: (err) => {
-      console.error('❌ 跳转失败:', err);
-      uni.showToast({
-        title: '跳转失败',
-        icon: 'none'
-      });
-    }
-  });
-}
-
 
 // 菜单模拟数据
 const menuCategories = ref([
@@ -400,6 +409,33 @@ const products = ref([
     image: '/static/food2.jpg'
   }
 ]);
+
+// 跳转到店铺评论页面
+function goToShopComments() {
+  if (!shopInfo.value) {
+    uni.showToast({ title: '店铺信息不存在', icon: 'none' });
+    return;
+  }
+  
+  const shopId = shopInfo.value._id;
+  const shopName = shopInfo.value.shopName || '';
+  
+  console.log('🔄 跳转到店铺评论页面:', {
+    shopId: shopId,
+    shopName: shopName
+  });
+  
+  uni.navigateTo({
+    url: `/pages/shopList/shopComments?shopId=${shopId}&shopName=${encodeURIComponent(shopName)}`,
+    fail: (err) => {
+      console.error('❌ 跳转到评论页面失败:', err);
+      uni.showToast({
+        title: '跳转失败',
+        icon: 'none'
+      });
+    }
+  });
+}
 
 // 计算属性
 const isOpen = computed(() => {
@@ -444,6 +480,12 @@ onLoad((options) => {
   } else {
     error.value = '店铺ID不存在';
   }
+  
+  // 获取当前用户信息
+  getCurrentUser();
+  
+  // 检测安全区域
+  checkSafeArea();
 });
 
 onShow(() => {
@@ -452,7 +494,134 @@ onShow(() => {
       initMapMarkers();
     }, 100);
   }
+  
+  // 页面显示时重新获取用户状态
+  getCurrentUser();
 });
+
+// 检测安全区域
+function checkSafeArea() {
+  try {
+    const systemInfo = uni.getSystemInfoSync();
+    hasSafeArea.value = systemInfo.safeAreaInsets && systemInfo.safeAreaInsets.bottom > 0;
+    console.log('📱 安全区域检测:', hasSafeArea.value, systemInfo.safeAreaInsets);
+  } catch (error) {
+    console.error('检测安全区域失败:', error);
+    hasSafeArea.value = false;
+  }
+}
+
+// 跳转到评论编辑页面
+function goToCommentEdit() {
+  if (!shopInfo.value) {
+    uni.showToast({
+      title: '店铺信息不存在',
+      icon: 'none'
+    });
+    return;
+  }
+  
+  // 检查登录状态
+  if (!checkLogin()) {
+    return;
+  }
+  
+  const shopId = shopInfo.value._id;
+  const url = `/pages/blog/edit?shopId=${shopId}`;
+  
+  console.log('🔄 跳转到评论编辑页面:', url);
+  
+  uni.navigateTo({
+    url: url,
+    fail: (err) => {
+      console.error('❌ 跳转失败:', err);
+      uni.showToast({
+        title: '跳转失败',
+        icon: 'none'
+      });
+    }
+  });
+}
+
+// 获取当前登录用户信息
+async function getCurrentUser() {
+  try {
+    console.log('🔄 开始获取当前用户信息...');
+    
+    // 方法1: 使用 blogList 页面的存储键名
+    const userInfoFromStorage = uni.getStorageSync('uni-id-pages-userInfo');
+    const token = uni.getStorageSync('uni_id_token');
+    
+    console.log('🔍 检查本地存储:', {
+      hasToken: !!token,
+      hasUserInfo: !!userInfoFromStorage,
+      userInfo: userInfoFromStorage
+    });
+    
+    if (token && userInfoFromStorage && userInfoFromStorage._id) {
+      currentUser.value = userInfoFromStorage;
+      userId.value = userInfoFromStorage._id;
+      isLoggedIn.value = true;
+      
+      console.log('✅ 从本地存储获取用户信息成功:', {
+        userId: userId.value,
+        userInfo: currentUser.value
+      });
+      
+      return;
+    }
+    
+    // 方法2: 尝试使用旧的存储键名作为备选
+    const oldUserInfo = uni.getStorageSync('uni_id_userinfo');
+    if (token && oldUserInfo && oldUserInfo._id) {
+      currentUser.value = oldUserInfo;
+      userId.value = oldUserInfo._id;
+      isLoggedIn.value = true;
+      
+      console.log('✅ 从旧存储键名获取用户信息成功:', {
+        userId: userId.value,
+        userInfo: currentUser.value
+      });
+      
+      // 同步到新的存储键名
+      uni.setStorageSync('uni-id-pages-userInfo', oldUserInfo);
+      
+      return;
+    }
+    
+    // 如果都没有，标记为未登录
+    isLoggedIn.value = false;
+    userId.value = '';
+    currentUser.value = null;
+    console.log('❌ 用户未登录或信息不完整');
+    
+  } catch (error) {
+    console.error('❌ 获取用户信息失败:', error);
+    isLoggedIn.value = false;
+    userId.value = '';
+    currentUser.value = null;
+  }
+}
+
+// 检查用户登录状态
+function checkLogin() {
+  if (!isLoggedIn.value) {
+    uni.showModal({
+      title: '提示',
+      content: '请先登录后再执行此操作',
+      confirmText: '去登录',
+      success: (res) => {
+        if (res.confirm) {
+          uni.navigateTo({
+            url: '/pages/login/login'
+          });
+        }
+      }
+    });
+    return false;
+  }
+  return true;
+}
 
 // 核心方法
 async function loadShopDetail(id) {
@@ -474,7 +643,13 @@ async function loadShopDetail(id) {
       console.log('✅ 店铺信息:', shopInfo.value);
       
       initMapMarkers();
-      checkFavoriteStatus(id);
+      
+      // 异步检查收藏状态
+      if (isLoggedIn.value) {
+        await checkFavoriteStatus(id);
+      } else {
+        isFavorite.value = false;
+      }
       
       // 加载评论
       console.log('🔄 开始加载评论...');
@@ -493,7 +668,131 @@ async function loadShopDetail(id) {
   }
 }
 
-// 评论相关方法 - 使用现有云对象
+// 收藏功能 - 修复登录检查
+async function toggleFavorite() {
+  if (!shopInfo.value) return;
+  
+  // 检查登录状态 - 使用更严格的检查
+  if (!isLoggedIn.value || !userId.value) {
+    uni.showModal({
+      title: '提示',
+      content: '请先登录后再执行收藏操作',
+      confirmText: '去登录',
+      success: (res) => {
+        if (res.confirm) {
+          uni.navigateTo({
+            url: '/pages/login/login'
+          });
+        }
+      }
+    });
+    return;
+  }
+  
+  console.log('🔄 用户收藏操作:', {
+    userId: userId.value,
+    shopId: shopInfo.value._id,
+    currentStatus: isFavorite.value
+  });
+  
+  try {
+    const articlesCo = uniCloud.importObject('articlesCloudObj');
+    
+    // 直接传递用户ID到云函数
+    const res = await articlesCo.toggleShopFavorite({
+      shopId: shopInfo.value._id,
+      userId: userId.value // 明确传递用户ID
+    });
+    
+    console.log('📡 收藏操作响应:', res);
+    
+    if (res.errCode === 0) {
+      isFavorite.value = res.data.isFavorite;
+      uni.showToast({ 
+        title: res.data.isFavorite ? '收藏成功' : '已取消收藏', 
+        icon: 'success' 
+      });
+    } else if (res.errCode === 1001) {
+      // 登录状态失效，重新获取用户信息
+      await getCurrentUser();
+      uni.showToast({ 
+        title: '登录状态已过期，请重新登录', 
+        icon: 'none' 
+      });
+    } else {
+      throw new Error(res.errMsg);
+    }
+    
+  } catch (error) {
+    console.error('❌ 收藏操作失败:', error);
+    uni.showToast({ 
+      title: error.message || '操作失败，请重试', 
+      icon: 'none' 
+    });
+  }
+}
+
+// 收藏状态检查 - 同样传递用户ID
+async function checkFavoriteStatus(id) {
+  if (!isLoggedIn.value || !userId.value) {
+    isFavorite.value = false;
+    return;
+  }
+  
+  try {
+    const articlesCo = uniCloud.importObject('articlesCloudObj');
+    const res = await articlesCo.getShopFavoriteStatus({
+      shopId: id,
+      userId: userId.value // 传递用户ID
+    });
+    
+    console.log('🔍 收藏状态查询结果:', res);
+    
+    if (res.errCode === 0) {
+      isFavorite.value = res.data.isFavorite;
+    } else {
+      console.error('❌ 获取收藏状态失败:', res.errMsg);
+      isFavorite.value = false;
+    }
+    
+  } catch (error) {
+    console.error('❌ 检查收藏状态异常:', error);
+    isFavorite.value = false;
+  }
+}
+
+// 获取用户收藏的店铺列表
+async function getShopFavoritesList() {
+  if (!isLoggedIn.value) {
+    uni.showToast({ title: '请先登录', icon: 'none' });
+    return;
+  }
+  
+  try {
+    const articlesCo = uniCloud.importObject('articlesCloudObj');
+    const res = await articlesCo.getShopFavoritesList({
+      page: 1,
+      size: 20
+    });
+    
+    if (res.errCode === 0) {
+      console.log('✅ 收藏店铺列表:', res.data);
+      return res.data;
+    } else {
+      throw new Error(res.errMsg);
+    }
+  } catch (error) {
+    console.error('❌ 获取收藏列表失败:', error);
+    uni.showToast({ 
+      title: '获取收藏列表失败', 
+      icon: 'none' 
+    });
+    return null;
+  }
+}
+
+
+// 评论相关方法
 async function loadShopReviews(reset = false) {
   if (!shopInfo.value?._id) return;
   
@@ -510,7 +809,6 @@ async function loadShopReviews(reset = false) {
   try {
     console.log('🔄 调用现有文章云对象...');
     
-    // 使用现有的 articlesCloudObj 云对象
     const articlesCo = uniCloud.importObject('articlesCloudObj');
     
     const res = await articlesCo.list({
@@ -521,14 +819,12 @@ async function loadShopReviews(reset = false) {
     console.log('📡 文章云对象响应:', res);
     
     if (res.errCode === 0) {
-      // 过滤出当前店铺的评论
       const shopReviews = (res.data || []).filter(item => 
         item.shop_id === shopInfo.value._id
       );
       
       console.log('✅ 过滤后的店铺评论:', shopReviews.length, '条');
       
-      // 处理评论数据 - 参考 blogList 页面的数据结构
       const newReviews = [];
       for (let item of shopReviews) {
         const processedReview = await processReviewData(item);
@@ -537,7 +833,6 @@ async function loadShopReviews(reset = false) {
       
       console.log('🎯 处理后的评论数据:', newReviews);
       
-      // 安全更新数据
       if (reset) {
         reviews.value = [...newReviews];
       } else {
@@ -553,37 +848,30 @@ async function loadShopReviews(reset = false) {
     }
   } catch (error) {
     console.error('❌ 评论加载失败:', error);
-    
-    // 备选方案：直接数据库查询
     await loadReviewsDirect();
   } finally {
     reviewsLoading.value = false;
   }
 }
 
-// 处理评论数据 - 参考 blogList 页面的实现
+// 处理评论数据
 async function processReviewData(item) {
   console.log('🔍 处理单条评论数据:', item);
   
-  // 用户信息处理 - 参考 blogList 页面的数据结构
   const userInfo = item.user_id && item.user_id[0] ? item.user_id[0] : {};
   const userId = userInfo._id;
   
-  // 处理头像
   let avatarUrl = await getAvatarUrl(userInfo, userId);
   
-  // 处理时间
   let timeStr = '';
   if (item.publish_date) {
     const date = new Date(item.publish_date);
     timeStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
   }
   
-  // 处理图片 - 参考 blogList 页面的图片数据结构
   let imageUrls = [];
   if (item.pics && Array.isArray(item.pics)) {
     imageUrls = item.pics.map(pic => {
-      // 参考 blogList 页面的图片格式：pic.url
       if (pic && typeof pic === 'object' && pic.url) {
         return pic.url;
       } else if (typeof pic === 'string') {
@@ -607,16 +895,14 @@ async function processReviewData(item) {
   };
 }
 
-// 获取头像URL - 参考 blogList 页面的实现
+// 获取头像URL
 async function getAvatarUrl(userInfo, userId) {
   if (!userInfo || !userId) return '/static/default-avatar.png';
   
-  // 1. 优先检查缓存
   if (userAvatarCache.value.has(userId)) {
     return userAvatarCache.value.get(userId);
   }
   
-  // 2. 检查用户对象的头像数据
   let avatarUrl = '/static/default-avatar.png';
   
   if (userInfo.avatar_url && userInfo.avatar_url.startsWith('http')) {
@@ -626,7 +912,6 @@ async function getAvatarUrl(userInfo, userId) {
     if (fileUrl.startsWith('http')) {
       avatarUrl = fileUrl;
     } else if (fileUrl.startsWith('cloud:')) {
-      // 异步转换云存储URL
       try {
         const result = await uniCloud.getTempFileURL({
           fileList: [fileUrl]
@@ -643,7 +928,6 @@ async function getAvatarUrl(userInfo, userId) {
     avatarUrl = userInfo.avatar;
   }
   
-  // 更新缓存
   if (avatarUrl !== '/static/default-avatar.png') {
     updateAvatarCache(userId, avatarUrl);
   }
@@ -663,8 +947,6 @@ function updateAvatarCache(userId, avatarUrl) {
 // 头像加载成功处理
 function onAvatarLoad(userId, avatarUrl) {
   if (!userId || userAvatarCache.value.has(userId)) return;
-  
-  // 缓存头像URL
   updateAvatarCache(userId, avatarUrl);
 }
 
@@ -679,7 +961,6 @@ function getSafeImageUrl(img) {
   if (typeof img === 'string') {
     return img;
   } else if (img && typeof img === 'object') {
-    // 尝试从对象中提取URL
     if (img.url) return img.url;
     if (img.path) return img.path;
     if (img.tempFileURL) return img.tempFileURL;
@@ -731,11 +1012,36 @@ function viewAllReviews() {
   });
 }
 
+// 跳转到评论详情页面
+function goToReviewDetail(review) {
+  if (!review || !review.id) {
+    uni.showToast({
+      title: '评论信息不完整',
+      icon: 'none'
+    });
+    return;
+  }
+
+  const url = `/pages/blog/detail?id=${review.id}&shopId=${shopInfo.value?._id || ''}`;
+  
+  console.log('🔄 跳转到评论详情:', url);
+  
+  uni.navigateTo({
+    url: url,
+    fail: (err) => {
+      console.error('❌ 跳转失败:', err);
+      uni.showToast({
+        title: '跳转失败',
+        icon: 'none'
+      });
+    }
+  });
+}
+
 // 图片预览
 function previewImage(images, currentIndex) {
   if (!images || images.length === 0) return;
   
-  // 确保图片URL是字符串
   const safeImages = images.map(img => getSafeImageUrl(img));
   
   uni.previewImage({
@@ -805,20 +1111,20 @@ function useTestData(id) {
   
   initMapMarkers();
   hasMenu.value = true;
-  checkFavoriteStatus(id);
   
-  // 仍然尝试加载真实评论
+  // 异步检查收藏状态
+  if (isLoggedIn.value) {
+    checkFavoriteStatus(id);
+  } else {
+    isFavorite.value = false;
+  }
+  
   setTimeout(() => {
     loadShopReviews(true);
   }, 1000);
 }
 
 // 辅助方法
-function checkFavoriteStatus(id) {
-  const favorites = uni.getStorageSync('favoriteShops') || [];
-  isFavorite.value = favorites.includes(id);
-}
-
 function goBack() {
   uni.navigateBack();
 }
@@ -893,26 +1199,6 @@ function openMapWithRoute() {
   });
 }
 
-function toggleFavorite() {
-  if (!shopInfo.value) return;
-  
-  const favorites = uni.getStorageSync('favoriteShops') || [];
-  
-  if (isFavorite.value) {
-    const index = favorites.indexOf(shopInfo.value._id);
-    if (index > -1) {
-      favorites.splice(index, 1);
-    }
-    uni.showToast({ title: '已取消收藏', icon: 'success' });
-  } else {
-    favorites.push(shopInfo.value._id);
-    uni.showToast({ title: '收藏成功', icon: 'success' });
-  }
-  
-  uni.setStorageSync('favoriteShops', favorites);
-  isFavorite.value = !isFavorite.value;
-}
-
 function shareShop() {
   if (!shopInfo.value) return;
   
@@ -934,6 +1220,10 @@ function shareShop() {
 function showContact() {
   if (!shopInfo.value) return;
   
+  if (!checkLogin()) {
+    return;
+  }
+  
   uni.navigateTo({
     url: `/pages/blog/edit?shopId=${shopInfo.value._id}`
   });
@@ -949,10 +1239,42 @@ function viewProductDetail(product) {
     url: `/pages/product/detail?id=${product.id}`
   });
 }
+
+// 获取当前用户信息的快捷方法
+function getCurrentUserId() {
+  return userId.value;
+}
+
+// 获取当前用户完整信息
+function getCurrentUserInfo() {
+  return currentUser.value;
+}
+
+// 检查是否已登录
+function isUserLoggedIn() {
+  return isLoggedIn.value;
+}
+
+// 调试用户信息
+function debugUserInfo() {
+  console.log('🔍 用户信息调试:');
+  console.log('1. Token:', uni.getStorageSync('uni_id_token'));
+  console.log('2. UserInfo:', uni.getStorageSync('uni-id-pages-userInfo'));
+  console.log('3. Token过期时间:', uni.getStorageSync('uni_id_token_expired'));
+  console.log('4. 当前状态 - isLoggedIn:', isLoggedIn.value);
+  console.log('5. 当前状态 - userId:', userId.value);
+  console.log('6. 当前状态 - currentUser:', currentUser.value);
+  
+  uni.showModal({
+    title: '用户信息调试',
+    content: `登录状态: ${isLoggedIn.value}
+用户ID: ${userId.value}
+Token: ${uni.getStorageSync('uni_id_token') ? '存在' : '不存在'}
+用户信息: ${uni.getStorageSync('uni-id-pages-userInfo') ? '存在' : '不存在'}`,
+    showCancel: false
+  });
+}
 </script>
-
-
-
 
 <style lang="scss" scoped>
 $primary: #FF6B35;
@@ -960,10 +1282,30 @@ $secondary: #4A6CF7;
 $text: #2d3748;
 $light-text: #718096;
 $border-radius: 24rpx;
+.homeHead {
+  /* #ifdef MP-WEIXIN */
+  background:
+    radial-gradient(50% 300px at left top, #d5f8fc, transparent),
+    radial-gradient(50% 200px at right top, #d3cbfc, transparent);
+  /* #endif */
+  
+  /* #ifdef H5 */
+  background: linear-gradient(180deg, #CDE5FF 0%, #E9F3FF 100%);
+  /* #endif */
+
+  .navBar {
+    width: 100%;
+    /* #ifdef MP-WEIXIN */
+    background: rgba(255, 255, 255, 0.9);
+    /* #endif */
+  }
+}
+
 .shop-detail {
   min-height: 100vh;
   background: #f8fafc;
   position: relative;
+  padding-bottom: 120rpx; /* 为底部评论框留出空间 */
 }
 
 /* 导航栏 */
@@ -974,6 +1316,8 @@ $border-radius: 24rpx;
   right: 0;
   height: 88rpx;
   padding: 0 30rpx;
+  
+  
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1010,7 +1354,7 @@ $border-radius: 24rpx;
 /* 头部背景图 */
 .header-bg {
   width: 100%;
-  height: 320rpx;
+  height: 280rpx;
   position: relative;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border-radius: 0 0 40rpx 40rpx;
@@ -1063,9 +1407,9 @@ $border-radius: 24rpx;
     flex-shrink: 0;
     
     .shop-logo {
-      margin-top: 20rpx;
-      width: 200rpx;
-      height: 200rpx;
+      margin-top: 10rpx;
+      width: 220rpx;
+      height: 220rpx;
       border-radius: 24rpx;
       border: 6rpx solid white;
       box-shadow: 
@@ -1073,26 +1417,6 @@ $border-radius: 24rpx;
         0 4rpx 16rpx rgba(0, 0, 0, 0.1);
       background: linear-gradient(135deg, #f8fafc, #e2e8f0);
       object-fit: cover;
-    }
-    
-    /* 收藏徽章 - 在Logo右下角里面 */
-    .favorite-badge {
-      position: absolute;
-      bottom: 8rpx;
-      right: 8rpx;
-      width: 44rpx;
-      height: 44rpx;
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.15);
-      z-index: 10;
-      
-      .favorite-icon {
-        font-size: 24rpx;
-      }
     }
   }
   
@@ -1107,7 +1431,7 @@ $border-radius: 24rpx;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 20rpx;
+    margin: 14rpx 14rpx 14rpx;
     
     .shop-name-container {
       flex: 1;
@@ -1118,7 +1442,7 @@ $border-radius: 24rpx;
       gap: 12rpx;
       
       .shop-name {
-        font-size: 36rpx;
+        font-size: 34rpx;
         font-weight: 800;
         color: #1a202c;
         line-height: 1.2;
@@ -1147,6 +1471,8 @@ $border-radius: 24rpx;
     }
     
     .rating-display {
+      margin-top: 8rpx;
+      margin-right: -4rpx;
       display: flex;
       align-items: center;
       gap: 12rpx;
@@ -1157,7 +1483,7 @@ $border-radius: 24rpx;
         gap: 2rpx;
         
         .star {
-          font-size: 24rpx;
+          font-size: 18rpx;
           color: #e2e8f0;
           
           &.filled {
@@ -1174,7 +1500,7 @@ $border-radius: 24rpx;
       }
       
       .rating-value {
-        font-size: 28rpx;
+        font-size: 22rpx;
         font-weight: 700;
         color: #f6ad55;
       }
@@ -1192,11 +1518,13 @@ $border-radius: 24rpx;
       display: flex;
       gap: 12rpx;
       flex-wrap: wrap;
+      margin-left: 12rpx;
+      margin-top: 2rpx;
       
       .status-tag {
         padding: 8rpx 16rpx;
         border-radius: 20rpx;
-        font-size: 22rpx;
+        font-size: 14rpx;
         display: flex;
         align-items: center;
         gap: 6rpx;
@@ -1213,11 +1541,11 @@ $border-radius: 24rpx;
         }
         
         .status-icon {
-          font-size: 18rpx;
+          font-size: 10rpx;
         }
         
         .status-text {
-          font-size: 25rpx;
+          font-size: 20rpx;
           font-weight: 500;
         }
       }
@@ -1229,8 +1557,8 @@ $border-radius: 24rpx;
       gap: 12rpx;
       
       .comment-btn, .phone-btn, .favorite-btn {
-        width: 56rpx;
-        height: 56rpx;
+        width: 48rpx;
+        height: 48rpx;
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -1269,6 +1597,7 @@ $border-radius: 24rpx;
     border-radius: 20rpx;
     padding: 20rpx 24rpx;
     margin-bottom: 24rpx;
+    margin-left: 12rpx;
     
     .metric-item {
       flex: 1;
@@ -1277,13 +1606,13 @@ $border-radius: 24rpx;
       &.highlight {
         .metric-value {
           color: #e53e3e;
-          font-size: 32rpx;
+          font-size: 24rpx;
         }
       }
       
       .metric-value {
         display: block;
-        font-size: 28rpx;
+        font-size: 24rpx;
         font-weight: 700;
         color: #2d3748;
         margin-bottom: 4rpx;
@@ -1303,6 +1632,8 @@ $border-radius: 24rpx;
     }
   }
 }
+
+
 
 /* 合并的位置和地址样式 */
 .location-address-section {
@@ -1780,6 +2111,74 @@ $border-radius: 24rpx;
   }
 }
 
+/* 底部固定评论框 */
+.fixed-comment-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 1rpx solid #e2e8f0;
+  padding: 20rpx 30rpx;
+  z-index: 999;
+  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.1);
+  
+  &.with-safe-area {
+    padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
+  }
+  
+  .comment-input-wrapper {
+    display: flex;
+    align-items: center;
+    background: #f8fafc;
+    border-radius: 50rpx;
+    padding: 20rpx 24rpx;
+    border: 2rpx solid #e2e8f0;
+    transition: all 0.3s ease;
+    
+    &:active {
+      background: #edf2f7;
+      transform: scale(0.98);
+    }
+    
+    .comment-input-placeholder {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 12rpx;
+      
+      .placeholder-icon {
+        font-size: 28rpx;
+        opacity: 0.7;
+      }
+      
+      .placeholder-text {
+        font-size: 26rpx;
+        color: #718096;
+      }
+    }
+    
+    .comment-btn {
+      background: $primary;
+      color: white;
+      padding: 12rpx 24rpx;
+      border-radius: 40rpx;
+      font-size: 24rpx;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      
+      &:active {
+        background: darken($primary, 10%);
+        transform: scale(0.95);
+      }
+      
+      .btn-text {
+        font-size: 24rpx;
+      }
+    }
+  }
+}
+
 /* 滚动条隐藏 */
 .images-scroll ::-webkit-scrollbar {
   display: none;
@@ -1912,6 +2311,11 @@ $border-radius: 24rpx;
     margin-left: max(30rpx, env(safe-area-inset-left));
     margin-right: max(30rpx, env(safe-area-inset-right));
   }
+  
+  .fixed-comment-bar {
+    padding-left: max(30rpx, env(safe-area-inset-left));
+    padding-right: max(30rpx, env(safe-area-inset-right));
+  }
 }
 
 /* 隐藏高德地图slogan */
@@ -1922,11 +2326,4 @@ $border-radius: 24rpx;
 :deep(.amap-copyright) {
   display: none !important;
 }
-
-/* 定义变量 */
-$primary: #FF6B35;
-$secondary: #4A6CF7;
-$text: #2d3748;
-$light-text: #718096;
-$border-radius: 24rpx;
 </style>

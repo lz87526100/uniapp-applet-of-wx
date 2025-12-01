@@ -924,6 +924,362 @@ async getUserArticles(params = {}) {
       errMsg: '获取文章列表失败: ' + error.message
     };
   }
-}
+},
+// ========== 店铺收藏功能 ==========
+
+// 切换店铺收藏状态
+// 切换店铺收藏状态 - 修复版
+// 切换店铺收藏状态 - 使用直接数据库操作绕过权限
+async toggleShopFavorite(data) {
+  try {
+    const { shopId, userId } = data;
+    const clientInfo = this.getClientInfo();
+    
+    // 优先使用前端传递的userId
+    const finalUserId = userId || clientInfo.uid;
+
+    console.log('🔄 切换店铺收藏状态:', { shopId, finalUserId });
+
+    if (!finalUserId) {
+      return { 
+        errCode: 1001, 
+        errMsg: '用户未登录，请先登录', 
+        data: null 
+      };
+    }
+
+    if (!shopId) {
+      return { 
+        errCode: 1004, 
+        errMsg: '店铺ID不能为空', 
+        data: null 
+      };
+    }
+
+    // 使用直接数据库操作，避免JQL权限限制
+    const db = uniCloud.database();
+    
+    // 检查店铺是否存在
+    const shopRes = await db.collection('shopDetail').doc(shopId).get();
+    console.log('📊 店铺查询结果:', shopRes);
+    
+    if (!shopRes.data || shopRes.data.length === 0) {
+      return { 
+        errCode: 1005, 
+        errMsg: '店铺不存在', 
+        data: null 
+      };
+    }
+
+    // 检查是否已收藏 - 使用直接查询
+    const favoriteRes = await db.collection('shopFavorites')
+      .where({
+        user_id: finalUserId,
+        shop_id: shopId,
+        status: 1
+      })
+      .get();
+
+    console.log('📊 收藏记录查询结果:', favoriteRes);
+
+    if (favoriteRes.data.length > 0) {
+      // 已收藏，取消收藏（更新状态为0）
+      console.log('🗑️ 取消收藏，记录ID:', favoriteRes.data[0]._id);
+      const updateRes = await db.collection('shopFavorites')
+        .doc(favoriteRes.data[0]._id)
+        .update({
+          status: 0,
+          updated_at: Date.now()
+        });
+      console.log('✅ 取消收藏结果:', updateRes);
+      
+      return {
+        errCode: 0,
+        errMsg: '取消收藏成功',
+        data: {
+          isFavorite: false,
+          updatedCount: updateRes.updated
+        }
+      };
+    } else {
+      // 检查是否有已取消的收藏记录
+      const canceledRes = await db.collection('shopFavorites')
+        .where({
+          user_id: finalUserId,
+          shop_id: shopId,
+          status: 0
+        })
+        .get();
+
+      if (canceledRes.data.length > 0) {
+        // 重新激活已取消的收藏
+        console.log('🔄 重新激活收藏，记录ID:', canceledRes.data[0]._id);
+        const updateRes = await db.collection('shopFavorites')
+          .doc(canceledRes.data[0]._id)
+          .update({
+            status: 1,
+            updated_at: Date.now()
+          });
+        
+        return {
+          errCode: 0,
+          errMsg: '收藏成功',
+          data: {
+            isFavorite: true,
+            updatedCount: updateRes.updated
+          }
+        };
+      } else {
+        // 全新添加收藏
+        const favoriteData = {
+          user_id: finalUserId,
+          shop_id: shopId,
+          created_at: Date.now(),
+          updated_at: Date.now(),
+          status: 1
+        };
+
+        console.log('➕ 添加收藏数据:', favoriteData);
+        const addRes = await db.collection('shopFavorites').add(favoriteData);
+        console.log('✅ 添加收藏结果:', addRes);
+        
+        return {
+          errCode: 0,
+          errMsg: '收藏成功',
+          data: {
+            isFavorite: true,
+            favoriteId: addRes.id
+          }
+        };
+      }
+    }
+  } catch (error) {
+    console.error('❌ 店铺收藏操作失败:', error);
+    return {
+      errCode: 500,
+      errMsg: '操作失败: ' + error.message,
+      data: null
+    };
+  }
+},
+
+// 获取店铺收藏状态 - 使用直接数据库操作
+async getShopFavoriteStatus(data) {
+  try {
+    const { shopId, userId } = data;
+    const clientInfo = this.getClientInfo();
+    const finalUserId = userId || clientInfo.uid;
+
+    console.log('🔍 获取店铺收藏状态:', { shopId, finalUserId });
+
+    if (!finalUserId) {
+      return { 
+        errCode: 0, 
+        data: { isFavorite: false },
+        errMsg: '用户未登录，默认未收藏'
+      };
+    }
+
+    // 使用直接数据库操作
+    const db = uniCloud.database();
+    const res = await db.collection('shopFavorites')
+      .where({
+        user_id: finalUserId,
+        shop_id: shopId,
+        status: 1
+      })
+      .get();
+
+    console.log('📊 收藏状态查询结果:', res);
+
+    const isFavorite = res.data.length > 0;
+    console.log(`🎯 收藏状态: ${isFavorite}`);
+
+    return {
+      errCode: 0,
+      errMsg: '获取成功',
+      data: {
+        isFavorite: isFavorite,
+        favoriteInfo: res.data[0] || null
+      }
+    };
+  } catch (error) {
+    console.error('❌ 获取收藏状态失败:', error);
+    return {
+      errCode: 0,
+      data: { isFavorite: false },
+      errMsg: '获取失败，默认未收藏'
+    };
+  }
+},// 获取用户收藏的店铺列表
+// 获取用户收藏的店铺列表 - 确保使用前端传递的userId
+async getShopFavoritesList(data = {}) {
+  try {
+    const { page = 1, size = 10, userId } = data;
+    
+    console.log('📋 获取收藏店铺列表:', { userId, page, size });
+
+    if (!userId) {
+      return { errCode: 1001, errMsg: '用户未登录', data: null };
+    }
+
+    const db = uniCloud.database();
+    const offset = (page - 1) * size;
+
+    // 使用直接数据库查询收藏记录
+    const favoriteRes = await db.collection('shopFavorites')
+      .where({
+        user_id: userId,
+        status: 1
+      })
+      .orderBy('created_at', 'desc')
+      .skip(offset)
+      .limit(size)
+      .get();
+
+    console.log('📊 收藏记录查询结果:', favoriteRes);
+
+    if (!favoriteRes.data || favoriteRes.data.length === 0) {
+      return {
+        errCode: 0,
+        data: {
+          list: [],
+          total: 0,
+          page,
+          size,
+          hasMore: false
+        }
+      };
+    }
+
+    // 获取店铺信息
+    const shopIds = favoriteRes.data.map(item => item.shop_id);
+    const shopRes = await db.collection('shopDetail')
+      .where({
+        _id: db.command.in(shopIds)
+      })
+      .get();
+
+    console.log('🏪 店铺信息查询结果:', shopRes);
+
+    // 创建店铺映射
+    const shopMap = {};
+    if (shopRes.data) {
+      shopRes.data.forEach(shop => {
+        shopMap[shop._id] = shop;
+      });
+    }
+
+    // 组合数据
+    const favorites = favoriteRes.data.map(favorite => {
+      return {
+        favoriteId: favorite._id,
+        createdAt: favorite.created_at,
+        shopInfo: shopMap[favorite.shop_id] || {
+          _id: favorite.shop_id,
+          shopName: '店铺信息加载中...'
+        }
+      };
+    });
+
+    // 获取总数
+    const countRes = await db.collection('shopFavorites')
+      .where({
+        user_id: userId,
+        status: 1
+      })
+      .count();
+
+    console.log(`📈 收藏总数: ${countRes.total}`);
+
+    return {
+      errCode: 0,
+      errMsg: '获取成功',
+      data: {
+        list: favorites,
+        total: countRes.total,
+        page,
+        size,
+        hasMore: favorites.length >= size
+      }
+    };
+  } catch (error) {
+    console.error('❌ 获取收藏列表失败:', error);
+    return {
+      errCode: 500,
+      errMsg: '获取收藏列表失败: ' + error.message,
+      data: null
+    };
+  }
+},
+
+// 在 articlesCloudObj 中添加调试方法
+async debugUserStatus() {
+  try {
+    const clientInfo = this.getClientInfo();
+    console.log('🔍 调试用户状态 - 完整客户端信息:', JSON.stringify(clientInfo, null, 2));
+    
+    // 检查所有可能的用户字段
+    const userFields = {
+      'uid': clientInfo.uid,
+      'userId': clientInfo.userId,
+      'userID': clientInfo.userID,
+      'openid': clientInfo.openid,
+      'unionid': clientInfo.unionid,
+      'uniIdToken': clientInfo.uniIdToken ? '存在' : '不存在',
+      'appId': clientInfo.appId,
+      'source': clientInfo.source
+    };
+    
+    console.log('🆔 用户字段检查:', userFields);
+    
+    // 尝试通过不同方式获取用户信息
+    let userInfo = null;
+    
+    // 方法1: 通过 clientInfo.uid 查询
+    if (clientInfo.uid) {
+      const db = uniCloud.database();
+      const userRes = await db.collection('uni-id-users')
+        .doc(clientInfo.uid)
+        .field('_id,nickname,avatar_file')
+        .get();
+      
+      console.log('👤 通过UID查询结果:', userRes);
+      userInfo = userRes.data && userRes.data.length > 0 ? userRes.data[0] : null;
+    }
+    
+    // 方法2: 使用 uni-id 云对象
+    if (!userInfo) {
+      try {
+        const uniIdCo = uniCloud.importObject('uni-id');
+        const uniIdRes = await uniIdCo.getUserInfo();
+        console.log('👤 uni-id云对象结果:', uniIdRes);
+        
+        if (uniIdRes.errCode === 0) {
+          userInfo = uniIdRes.userInfo;
+        }
+      } catch (uniIdError) {
+        console.error('uni-id云对象调用失败:', uniIdError);
+      }
+    }
+    
+    return {
+      errCode: 0,
+      data: {
+        clientInfo: userFields,
+        userInfo: userInfo,
+        isLoggedIn: !!userInfo,
+        message: userInfo ? '用户已登录' : '用户未登录'
+      }
+    };
+    
+  } catch (error) {
+    console.error('❌ 调试用户状态失败:', error);
+    return {
+      errCode: 500,
+      errMsg: '调试失败: ' + error.message
+    };
+  }
+},
     
 };

@@ -85,7 +85,6 @@
 
               <view class="action" @click.stop="removeFavorite(item.article_id)">
                 <uni-icons type="trash" size="18" color="#FF5B5B"></uni-icons>
-                <text class="action-text">移除</text>
               </view>
             </view>
           </view>

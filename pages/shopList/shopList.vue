@@ -1,103 +1,95 @@
 <template>
   <view class="shop-list" :aria-label="'精选商家列表'">
-
     
-   <view class="head" >
+    <view class="head">
       <store-head></store-head>
     </view>
 
-    <!-- 搜索框 -->
-<!--    <view class="search-box">
-      <uni-search-bar 
-        v-model="searchKeyword" 
-        placeholder="搜索店铺、美食或服务" 
-        @confirm="loadShops(1)"
-        @clear="clearSearch"
-        cancelButton="none"
-        radius="50"
-      />
-    </view> -->
-
     <!-- 内容区 -->
     <view class="body">
-    <scroll-view
-      scroll-y 
-      class="content" 
-      @scrolltolower="loadMore"
-      enable-back-to-top
-    >
-      <!-- 骨架屏 -->
-      <view v-if="loading && shopsList.length === 0" class="skeleton">
-        <view v-for="i in 5" :key="i" class="skeleton-item">
-          <view class="skeleton-img"></view>
-          <view class="skeleton-body">
-            <view class="skeleton-line w-70"></view>
-            <view class="skeleton-line w-90 mt-8"></view>
-            <view class="skeleton-line w-60 mt-8"></view>
+      <scroll-view
+        scroll-y 
+        class="content" 
+        @scrolltolower="loadMore"
+        enable-back-to-top
+      >
+        <!-- 骨架屏 -->
+        <view v-if="loading && shopsList.length === 0" class="skeleton">
+          <view v-for="i in 5" :key="i" class="skeleton-item">
+            <view class="skeleton-img"></view>
+            <view class="skeleton-body">
+              <view class="skeleton-line w-70"></view>
+              <view class="skeleton-line w-90 mt-8"></view>
+              <view class="skeleton-line w-60 mt-8"></view>
+            </view>
           </view>
         </view>
-      </view>
 
-      <!-- 店铺列表 -->
-      <view v-else class="shop-list-content">
-        <view 
-          class="shop-card" 
-          v-for="shop in shopsList" 
-          :key="shop._id"
-          @click="goShopDetail(shop._id)"
-          :aria-label="`进入 ${shop.shopName} 店铺详情`"
-        >
-          <image 
-            class="shop-img fade-in" 
-            :src="shop.shopPic || '/static/default-shop.jpg'" 
-            mode="widthFix"
-            lazy-load
-            @error="handleImageError"
-          />
-          <view class="shop-overlay"></view>
-          <view class="shop-content">
-            <view class="shop-top">
-              <text class="shop-name">{{ shop.shopName }}</text>
-              <view class="rating-badge" v-if="shop.rating > 0">
-                <text class="star-icon">★</text>
-                <text class="rating-text">{{ (shop.rating / 10).toFixed(1) }}</text>
+        <!-- 店铺列表 -->
+        <view v-else class="shop-list-content">
+          <view 
+            class="shop-card" 
+            v-for="shop in shopsList" 
+            :key="shop._id"
+            @click="goShopDetail(shop._id)"
+            :aria-label="`进入 ${shop.shopName} 店铺详情`"
+          >
+            <image 
+              class="shop-img fade-in" 
+              :src="shop.shopPic || '/static/default-shop.jpg'" 
+              mode="widthFix"
+              lazy-load
+              @error="handleImageError"
+            />
+            <view class="shop-overlay"></view>
+            <view class="shop-content">
+              <view class="shop-top">
+                <text class="shop-name">{{ shop.shopName }}</text>
+                <view class="rating-badge" v-if="shop.rating > 0">
+                  <text class="star-icon">★</text>
+                  <text class="rating-text">{{ (shop.rating / 10).toFixed(1) }}</text>
+                </view>
               </view>
-            </view>
-            <view class="shop-meta">
-              <view class="meta-item address">
-                <text class="text">{{ shop.address }}</text>
-                <view class="meta-row">
-                  <view class="meta-tag sales" v-if="shop.monthlyOrders !== undefined">
-                    月售 {{ shop.monthlyOrders }} 单
-                  </view>
-                  <view class="meta-tag time" v-if="shop.deliveryTime">
-                    ⏱️ {{ shop.deliveryTime }}分钟
+              <view class="shop-meta">
+                <view class="meta-item address">
+                  <text class="text">{{ shop.address }}</text>
+                  <view class="meta-row">
+                    <view class="meta-tag sales" v-if="shop.monthlyOrders !== undefined">
+                      月售 {{ shop.monthlyOrders }} 单
+                    </view>
+                    <view class="meta-tag time" v-if="shop.deliveryTime">
+                      ⏱️ {{ shop.deliveryTime }}分钟
+                    </view>
                   </view>
                 </view>
               </view>
             </view>
           </view>
-        </view>
 
-        <!-- 空状态 -->
-        <view v-if="shopsList.length === 0 && !loading" class="empty-state">
-          <view class="empty-icon">🏪</view>
-          <text class="empty-title">没有找到店铺</text>
-          <text class="empty-desc">
-            {{ searchKeyword ? `未找到“${searchKeyword}”相关店铺` : '暂无推荐商家' }}
-          </text>
-          <button class="empty-btn" @click="loadShops(1)">刷新重试</button>
-        </view>
+          <!-- 空状态 -->
+          <view v-if="shopsList.length === 0 && !loading" class="empty-state">
+            <view class="empty-icon">🏪</view>
+            <text class="empty-title">没有找到店铺</text>
+            <text class="empty-desc">
+              {{ searchKeyword ? `未找到"${searchKeyword}"相关店铺` : '暂无推荐商家' }}
+            </text>
+            <button class="empty-btn" @click="loadShops(1)">刷新重试</button>
+          </view>
 
-        <!-- 加载更多 -->
-        <view v-if="shopsList.length > 0" class="load-more">
-          <uni-load-more 
-            :status="loadingMore ? 'loading' : (hasMore ? 'more' : 'noMore')"
-            iconType="auto"
-          />
+          <!-- 加载更多 -->
+          <view v-if="shopsList.length > 0" class="load-more">
+            <uni-load-more 
+              :status="loadingMore ? 'loading' : (hasMore ? 'more' : 'noMore')"
+              iconType="auto"
+            />
+          </view>
         </view>
-      </view>
-    </scroll-view>
+      </scroll-view>
+    </view>
+
+    <!-- 修复：地图悬浮按钮 -->
+    <view class="fab-map" @click="goToMap">
+      <view class="map-icon">📍</view>
     </view>
   </view>
 </template>
@@ -115,6 +107,14 @@ const currentPage = ref(1);
 onMounted(() => {
   loadShops(1);
 });
+
+// 跳转到地图页面
+function goToMap() {
+  console.log('跳转到地图页面');
+  uni.navigateTo({
+    url: '/pages/showMap/showMap'
+  });
+}
 
 async function loadShops(page = 1) {
   if (loading.value || loadingMore.value) return;
@@ -197,7 +197,6 @@ function goShopDetail(id) {
 }
 </script>
 
-
 <style lang="scss" scoped>
 /* -------------------- 变量区 -------------------- */
 $primary: #4F8BFF;
@@ -242,6 +241,46 @@ $transition: all .3s cubic-bezier(.4, 0, .2, 1);
   height: 100%;
   background: transparent;
   padding: 24rpx 0rpx 40rpx;
+}
+
+/* -------------------- 修复：地图悬浮按钮样式 -------------------- */
+.fab-map {
+  position: fixed;
+  right: 50rpx;
+  bottom: 140rpx;
+  z-index: 999;
+  width: 105rpx;
+  height: 105rpx;
+  background: linear-gradient(135deg, #4F8BFF 0%, #6AA6FF 100%);
+  border-radius: 50%;
+  box-shadow: 0 8rpx 32rpx rgba(79, 139, 255, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: fadeInUp 0.6s ease both;
+  
+  &:active {
+    transform: scale(0.9);
+    box-shadow: 0 4rpx 16rpx rgba(79, 139, 255, 0.6);
+  }
+  
+  .map-icon {
+    font-size: 32rpx;
+    color: white;
+    font-weight: 300;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40rpx) scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 /* -------------------- 骨架屏 -------------------- */
@@ -307,7 +346,6 @@ $transition: all .3s cubic-bezier(.4, 0, .2, 1);
   .shop-img {
     width: 100%;
     height: auto;
-    display: block;
     max-height: 400rpx;
     object-fit: cover;
     opacity: 0;
@@ -394,7 +432,6 @@ $transition: all .3s cubic-bezier(.4, 0, .2, 1);
         display: flex;
         gap: 16rpx;
         flex-wrap: wrap;
-        margin-top: 8rpx;
       }
 
       .meta-tag {

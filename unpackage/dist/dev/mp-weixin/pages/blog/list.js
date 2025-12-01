@@ -41,8 +41,21 @@ const _sfc_main = {
     common_vendor.onPullDownRefresh(() => {
       onRefresh();
     });
+    const goShopDetail = (shopId) => {
+      if (!shopId) {
+        common_vendor.index.showToast({
+          title: "店铺信息不存在",
+          icon: "none"
+        });
+        return;
+      }
+      common_vendor.index.__f__("log", "at pages/blog/list.vue:197", "跳转到店铺详情页，店铺ID:", shopId);
+      common_vendor.index.navigateTo({
+        url: `/pages/shopList/shopDetail?id=${shopId}`
+      });
+    };
     const goDetail = (articleId, shopId) => {
-      common_vendor.index.__f__("log", "at pages/blog/list.vue:189", "跳转到详情页，文章ID:", articleId, "商家ID:", shopId);
+      common_vendor.index.__f__("log", "at pages/blog/list.vue:205", "跳转到详情页，文章ID:", articleId, "商家ID:", shopId);
       let url = `/pages/blog/detail?id=${articleId}`;
       if (shopId) {
         url += `&shopId=${shopId}`;
@@ -52,21 +65,21 @@ const _sfc_main = {
       });
     };
     common_vendor.index.$on("editEvent", () => {
-      common_vendor.index.__f__("log", "at pages/blog/list.vue:201", "收到编辑事件，刷新数据");
+      common_vendor.index.__f__("log", "at pages/blog/list.vue:217", "收到编辑事件，刷新数据");
       page = 1;
       finished.value = false;
       getData(true);
     });
     const setupUserInfoListeners = () => {
       common_vendor.index.$on("userInfoUpdated", (data) => {
-        common_vendor.index.__f__("log", "at pages/blog/list.vue:210", "博客列表收到用户信息更新:", data);
+        common_vendor.index.__f__("log", "at pages/blog/list.vue:226", "博客列表收到用户信息更新:", data);
         updateUserAvatarInList(data);
       });
     };
     const updateUserAvatarInList = (userData) => {
       if (!userData.userId || !userData.avatar)
         return;
-      common_vendor.index.__f__("log", "at pages/blog/list.vue:219", "开始更新博客列表中的用户头像，用户ID:", userData.userId);
+      common_vendor.index.__f__("log", "at pages/blog/list.vue:235", "开始更新博客列表中的用户头像，用户ID:", userData.userId);
       updateAvatarCache(userData.userId, userData.avatar);
       articlesList.value.forEach((item, index) => {
         if (item.user_id && item.user_id[0] && item.user_id[0]._id === userData.userId) {
@@ -132,7 +145,7 @@ const _sfc_main = {
           updateAvatarInList(userId, httpUrl);
         }
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/blog/list.vue:311", "转换云存储URL失败:", error);
+        common_vendor.index.__f__("error", "at pages/blog/list.vue:327", "转换云存储URL失败:", error);
       }
     };
     const updateAvatarInList = (userId, avatarUrl) => {
@@ -148,7 +161,7 @@ const _sfc_main = {
       });
     };
     const handleAvatarError = (event2) => {
-      common_vendor.index.__f__("log", "at pages/blog/list.vue:332", "头像加载失败:", event2);
+      common_vendor.index.__f__("log", "at pages/blog/list.vue:348", "头像加载失败:", event2);
     };
     const isShopReview = (item) => {
       return item.shop_id && item.rating;
@@ -172,7 +185,7 @@ const _sfc_main = {
       return "加载中...";
     };
     const handleShopAvatarError = (event2) => {
-      common_vendor.index.__f__("log", "at pages/blog/list.vue:366", "商家头像加载失败:", event2);
+      common_vendor.index.__f__("log", "at pages/blog/list.vue:382", "商家头像加载失败:", event2);
       event2.target.src = "/static/default-shop.jpg";
     };
     const loadShopInfo = async (shopId) => {
@@ -180,27 +193,27 @@ const _sfc_main = {
       if (!shopId || shopInfoCache.value.has(shopId))
         return;
       try {
-        common_vendor.index.__f__("log", "at pages/blog/list.vue:375", "开始加载商家信息，shopId:", shopId);
+        common_vendor.index.__f__("log", "at pages/blog/list.vue:391", "开始加载商家信息，shopId:", shopId);
         const res = await common_vendor.tr.callFunction({
           name: "getShopDetail",
           data: { shopId }
         });
         if (((_a = res.result) == null ? void 0 : _a.errCode) === 0) {
-          common_vendor.index.__f__("log", "at pages/blog/list.vue:382", "商家信息加载成功:", res.result.data);
+          common_vendor.index.__f__("log", "at pages/blog/list.vue:398", "商家信息加载成功:", res.result.data);
           shopInfoCache.value.set(shopId, res.result.data);
           articlesList.value = [...articlesList.value];
         } else {
-          common_vendor.index.__f__("error", "at pages/blog/list.vue:388", "商家信息加载失败:", (_b = res.result) == null ? void 0 : _b.errMsg);
+          common_vendor.index.__f__("error", "at pages/blog/list.vue:404", "商家信息加载失败:", (_b = res.result) == null ? void 0 : _b.errMsg);
         }
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/blog/list.vue:391", "加载商家信息异常:", error);
+        common_vendor.index.__f__("error", "at pages/blog/list.vue:407", "加载商家信息异常:", error);
       }
     };
     const batchLoadShopInfo = async () => {
       const shopIds = articlesList.value.filter((item) => item.shop_id && !shopInfoCache.value.has(item.shop_id)).map((item) => item.shop_id);
       if (shopIds.length === 0)
         return;
-      common_vendor.index.__f__("log", "at pages/blog/list.vue:403", "批量加载商家信息，数量:", shopIds.length);
+      common_vendor.index.__f__("log", "at pages/blog/list.vue:419", "批量加载商家信息，数量:", shopIds.length);
       for (const shopId of shopIds) {
         await loadShopInfo(shopId);
       }
@@ -213,30 +226,30 @@ const _sfc_main = {
         loadingMore.value = true;
       }
       try {
-        common_vendor.index.__f__("log", "at pages/blog/list.vue:428", "获取博客列表数据，页码:", page);
+        common_vendor.index.__f__("log", "at pages/blog/list.vue:444", "获取博客列表数据，页码:", page);
         const { errCode, data } = await articlesCloudObj.list({ page, size });
         if (errCode === 0) {
-          common_vendor.index.__f__("log", "at pages/blog/list.vue:432", "获取到数据条数:", data ? data.length : 0);
+          common_vendor.index.__f__("log", "at pages/blog/list.vue:448", "获取到数据条数:", data ? data.length : 0);
           if (reset) {
             articlesList.value = data || [];
           } else {
             articlesList.value = [...articlesList.value, ...data || []];
           }
           finished.value = !data || data.length < size;
-          common_vendor.index.__f__("log", "at pages/blog/list.vue:443", "数据加载完成，列表长度:", articlesList.value.length, "是否完成:", finished.value);
+          common_vendor.index.__f__("log", "at pages/blog/list.vue:459", "数据加载完成，列表长度:", articlesList.value.length, "是否完成:", finished.value);
           if (articlesList.value.length > 0) {
             await checkFavoritesStatus();
             await batchLoadShopInfo();
           }
         } else {
-          common_vendor.index.__f__("error", "at pages/blog/list.vue:453", "获取数据失败:", errCode);
+          common_vendor.index.__f__("error", "at pages/blog/list.vue:469", "获取数据失败:", errCode);
           common_vendor.index.showToast({
             title: "加载失败",
             icon: "none"
           });
         }
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/blog/list.vue:460", "获取数据异常:", error);
+        common_vendor.index.__f__("error", "at pages/blog/list.vue:476", "获取数据异常:", error);
         common_vendor.index.showToast({
           title: "网络错误",
           icon: "none"
@@ -255,7 +268,7 @@ const _sfc_main = {
           common_vendor.index.showToast({ title: "请先登录", icon: "none" });
           return;
         }
-        common_vendor.index.__f__("log", "at pages/blog/list.vue:485", "切换收藏状态:", { articleId, currentStatus: item.isFavorited });
+        common_vendor.index.__f__("log", "at pages/blog/list.vue:501", "切换收藏状态:", { articleId, currentStatus: item.isFavorited });
         if (item.isFavorited) {
           const success = await common_style_favorites.favoritesManager.removeFavorite(articleId);
           if (success) {
@@ -270,7 +283,7 @@ const _sfc_main = {
           }
         }
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/blog/list.vue:503", "切换收藏状态失败:", error);
+        common_vendor.index.__f__("error", "at pages/blog/list.vue:519", "切换收藏状态失败:", error);
         common_vendor.index.showToast({ title: "操作失败，请重试", icon: "none" });
       }
     }
@@ -278,19 +291,19 @@ const _sfc_main = {
       try {
         const articleIds = articlesList.value.map((item) => item._id).filter((id) => id);
         if (articleIds.length === 0) {
-          common_vendor.index.__f__("log", "at pages/blog/list.vue:514", "没有文章需要检查收藏状态");
+          common_vendor.index.__f__("log", "at pages/blog/list.vue:530", "没有文章需要检查收藏状态");
           return;
         }
-        common_vendor.index.__f__("log", "at pages/blog/list.vue:518", "🔄 开始检查收藏状态，文章数量:", articleIds.length);
+        common_vendor.index.__f__("log", "at pages/blog/list.vue:534", "🔄 开始检查收藏状态，文章数量:", articleIds.length);
         const favoritesStatus = await common_style_favorites.favoritesManager.batchCheckFavorites(articleIds);
-        common_vendor.index.__f__("log", "at pages/blog/list.vue:521", "✅ 收藏状态检查完成:", favoritesStatus);
+        common_vendor.index.__f__("log", "at pages/blog/list.vue:537", "✅ 收藏状态检查完成:", favoritesStatus);
         articlesList.value.forEach((item) => {
           if (item && item._id) {
             item.isFavorited = favoritesStatus[item._id] || false;
           }
         });
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/blog/list.vue:530", "检查收藏状态失败，设置所有为未收藏:", error);
+        common_vendor.index.__f__("error", "at pages/blog/list.vue:546", "检查收藏状态失败，设置所有为未收藏:", error);
         articlesList.value.forEach((item) => {
           if (item) {
             item.isFavorited = false;
@@ -302,15 +315,15 @@ const _sfc_main = {
       if (refreshing.value)
         return;
       refreshing.value = true;
-      common_vendor.index.__f__("log", "at pages/blog/list.vue:545", "下拉刷新");
+      common_vendor.index.__f__("log", "at pages/blog/list.vue:561", "下拉刷新");
       getData(true);
     }
     function loadMore() {
       if (loadingMore.value || finished.value || loading.value) {
-        common_vendor.index.__f__("log", "at pages/blog/list.vue:553", "跳过加载: loadingMore=", loadingMore.value, "finished=", finished.value, "loading=", loading.value);
+        common_vendor.index.__f__("log", "at pages/blog/list.vue:569", "跳过加载: loadingMore=", loadingMore.value, "finished=", finished.value, "loading=", loading.value);
         return;
       }
-      common_vendor.index.__f__("log", "at pages/blog/list.vue:557", "触底加载更多，页码:", page + 1);
+      common_vendor.index.__f__("log", "at pages/blog/list.vue:573", "触底加载更多，页码:", page + 1);
       loadingMore.value = true;
       page++;
       getData(false);
@@ -340,10 +353,10 @@ const _sfc_main = {
         remove(id);
     }
     function goAdd() {
-      common_vendor.index.navigateTo({ url: "/pages/blog/edit" });
+      common_vendor.index.navigateTo({ url: "/pages/blog/choseEdit" });
     }
     common_vendor.onUnmounted(() => {
-      common_vendor.index.__f__("log", "at pages/blog/list.vue:605", "博客列表页面卸载");
+      common_vendor.index.__f__("log", "at pages/blog/list.vue:621", "博客列表页面卸载");
       common_vendor.index.$off("userInfoUpdated");
       common_vendor.index.$off("editEvent");
     });
@@ -351,9 +364,9 @@ const _sfc_main = {
       try {
         const articlesCloudObj2 = common_vendor.tr.importObject("articlesCloudObj");
         const result = await articlesCloudObj2.debugLoginStatus();
-        common_vendor.index.__f__("log", "at pages/blog/list.vue:626", "🔍 登录状态调试结果:", result);
+        common_vendor.index.__f__("log", "at pages/blog/list.vue:642", "🔍 登录状态调试结果:", result);
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/blog/list.vue:628", "调试失败:", error);
+        common_vendor.index.__f__("error", "at pages/blog/list.vue:644", "调试失败:", error);
       }
     }
     common_vendor.onMounted(() => {
@@ -399,28 +412,30 @@ const _sfc_main = {
             m: item.rating
           }, item.rating ? {
             n: common_vendor.t(item.rating)
-          } : {}), {
-            o: "f909dea6-2-" + i0,
-            p: common_vendor.p({
+          } : {}, {
+            o: common_vendor.o(($event) => goShopDetail(item.shop_id), item._id)
+          }), {
+            p: "f909dea6-2-" + i0,
+            q: common_vendor.p({
               type: item.isFavorited ? "heart-filled" : "heart",
               color: item.isFavorited ? "#FF5B5B" : "#8B9AB6",
               size: "18"
             }),
-            q: common_vendor.o(($event) => toggleFavorite(item._id, item), item._id),
-            r: common_vendor.unref(utils_common.isPermission)(item.user_id[0]._id)
+            r: common_vendor.o(($event) => toggleFavorite(item._id, item), item._id),
+            s: common_vendor.unref(utils_common.isPermission)(item.user_id[0]._id)
           }, common_vendor.unref(utils_common.isPermission)(item.user_id[0]._id) ? {
-            s: "f909dea6-3-" + i0,
-            t: common_vendor.p({
+            t: "f909dea6-3-" + i0,
+            v: common_vendor.p({
               type: "trash",
               size: "18",
               color: "#fff"
             }),
-            v: common_vendor.o(($event) => remove(item._id), item._id)
+            w: common_vendor.o(($event) => remove(item._id), item._id)
           } : {}, {
-            w: item._id,
-            x: common_vendor.o(touchStart, item._id),
-            y: common_vendor.o(($event) => touchEnd(item._id), item._id),
-            z: isShopReview(item) ? 1 : ""
+            x: item._id,
+            y: common_vendor.o(touchStart, item._id),
+            z: common_vendor.o(($event) => touchEnd(item._id), item._id),
+            A: isShopReview(item) ? 1 : ""
           });
         }),
         f: loadingMore.value
